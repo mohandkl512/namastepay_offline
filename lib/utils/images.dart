@@ -1,0 +1,1 @@
+const String namastePayLogo="assets/images/logo.png";
