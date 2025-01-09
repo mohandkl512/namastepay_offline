@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ussd_advanced/ussd_advanced.dart';
@@ -106,6 +108,86 @@ class HomeCubit extends Cubit<ServiceState> {
         dPrint(exception.message);
         dPrint(exception.code);
         emit(ServiceError(ErrorMessage.unexpectedError));
+      }
+    }
+  }
+
+  Future<void> requestMoney(
+    String toContact,
+    int amount,
+    String pin,
+  ) async {
+    final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
+
+    if (!Utils.isValidPhoneNumber(toContact)) {
+      emit(ServiceError(ErrorMessage.phoneValidationError));
+    } else if (!Utils.isPinValid(pin)) {
+      emit(ServiceError(ErrorMessage.pinvalidationError));
+    } else {
+      emit(ServiceLoading());
+      try {
+        if (authProvider.authState is Verified) {
+          Verified verified = authProvider.authState as Verified;
+          String requestMoneycode =
+              ussdMethods.requestMoney(toContact, pin, amount.toString());
+          String? response = await UssdAdvanced.sendAdvancedUssd(
+            code: requestMoneycode,
+            subscriptionId: verified.subscriptionId,
+          );
+          dPrint(response);
+          emit(ServiceSelected(response));
+        }
+      } on PlatformException catch (exception) {
+        dPrint(exception.details);
+        dPrint(exception.message);
+        dPrint(exception.code);
+        emit(ServiceError(ErrorMessage.unexpectedError));
+      } on TimeoutException catch (exception) {
+        dPrint(exception);
+        emit(ServiceError(DisplayMessage.timeoutException));
+      } on MissingPluginException catch (exception) {
+        dPrint(exception);
+        emit(ServiceError(DisplayMessage.unexpectedError));
+      }
+    }
+  }
+  
+  Future<void> sendMoney(
+    String toContact,
+    int amount,
+    String pin,
+  ) async {
+    final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
+
+    if (!Utils.isValidPhoneNumber(toContact)) {
+      emit(ServiceError(ErrorMessage.phoneValidationError));
+    } else if (!Utils.isPinValid(pin)) {
+      emit(ServiceError(ErrorMessage.pinvalidationError));
+    } else {
+      emit(ServiceLoading());
+      try {
+        if (authProvider.authState is Verified) {
+          Verified verified = authProvider.authState as Verified;
+          String sendMoneyCode =
+              ussdMethods.sendMoney(toContact, pin, amount.toString());
+          String? response = await UssdAdvanced.sendAdvancedUssd(
+            code: sendMoneyCode,
+            subscriptionId: verified.subscriptionId,
+          );
+          dPrint(response);
+          emit(ServiceSelected(response));
+        }
+      } on PlatformException catch (exception) {
+        dPrint(exception.details);
+        dPrint(exception.message);
+        dPrint(exception.code);
+        emit(ServiceError(ErrorMessage.unexpectedError));
+      } on TimeoutException catch (exception) {
+        dPrint(exception);
+        emit(ServiceError(DisplayMessage.timeoutException));
+      } on MissingPluginException catch (exception) {
+        dPrint(exception);
+        emit(ServiceError(DisplayMessage.unexpectedError));
       }
     }
   }

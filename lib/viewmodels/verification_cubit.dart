@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ussd_advanced/ussd_advanced.dart';
@@ -62,6 +64,12 @@ class VerificationCubit extends Cubit<VerificationState> {
         emit(
           VerificationError(AuthErrorMessage.userNotRegistered),
         );
+      } on TimeoutException catch (exception) {
+        dPrint(exception);
+        emit(VerificationError(DisplayMessage.timeoutException));
+      } on MissingPluginException catch (exception) {
+        dPrint(exception);
+        emit(VerificationError(DisplayMessage.unexpectedError));
       }
       getIt.unregister<AuthenticationProvider>();
       getIt.registerLazySingleton<AuthenticationProvider>(

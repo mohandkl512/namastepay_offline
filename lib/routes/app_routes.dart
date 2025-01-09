@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ussd_npay/home_page.dart';
 import 'package:ussd_npay/login_page.dart';
+import 'package:ussd_npay/view/recharge_screen.dart';
+import 'package:ussd_npay/view/send_money_page.dart';
+import 'package:ussd_npay/view/sucess_page.dart';
 
+import '../view/request_money_page.dart';
 import 'route_path.dart';
 
 class AppRoutes {
@@ -15,8 +19,19 @@ class AppRoutes {
       case RoutesName.login:
         return MaterialPageRoute(
             builder: (BuildContext context) => const LoginPage());
-
-      // if non of these above cases are met then return this
+      case RoutesName.topup:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const RechargeScreen());
+      case RoutesName.requestMoney:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const RequestMoneyScreen());
+      case RoutesName.actionCompleted:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SuccessScreen());
+      case RoutesName.sendMoney:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SendMoneyScreen());
+      // if none of these above cases are met then return this
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

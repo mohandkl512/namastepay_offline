@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:ussd_npay/login_page.dart';
 import 'package:ussd_npay/services/ussd/ussd_methods.dart';
 import 'package:ussd_npay/viewmodels/verification_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/verification_state.dart';
@@ -28,8 +27,8 @@ void main(List<String> args) {
       child: ResponsiveSizer(
         builder: (context, orientation, screenType) {
           return MaterialApp(
-            home: const LoginPage(),
-            initialRoute: RoutesName.login,
+            // home: const LoginPage(),
+            initialRoute: RoutesName.home,
             onGenerateRoute: AppRoutes.generateRoutes,
             onUnknownRoute: (settings) {
               return MaterialPageRoute(

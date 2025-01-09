@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils/images.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
-import 'package:ussd_npay/utils/sim_type.dart';
-import 'package:ussd_npay/view/recharge_page.dart';
 import 'package:ussd_npay/viewmodels/home_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/home_state.dart';
 import 'package:ussd_npay/widgets/user_service.dart';
-
 import 'utils/string_modification.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,24 +30,37 @@ class _HomePageState extends State<HomePage> {
           height: 24.sp,
           width: size.width * 0.5,
         ),
+        actions: [
+          IconButton.outlined(
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, RoutesName.login, (_) => false);
+            },
+            icon: const Icon(
+              Icons.logout_outlined,
+            ),
+          )
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 24.sp),
           Center(
             child: Text(
-              'Welcome!',
+              'Operate Offline @ \nNamastePay!!!',
               style: TextStyle(fontSize: 24.sp),
+              textAlign: TextAlign.center,
             ),
           ),
-          Center(
-            child: Text(
-              """This is your offline assitance for NamastePay ,
-                Feel Free to explore!!!""",
-              style: TextStyle(fontSize: 16.sp),
-            ),
-          ),
+          // Center(
+          //   child: Text(
+          //     """This is your offline assitance for NamastePay ,
+          //       Feel Free to explore!!!""",
+          //     style: TextStyle(fontSize: 16.sp),
+          //   ),
+          // ),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
@@ -60,14 +71,14 @@ class _HomePageState extends State<HomePage> {
                   'Available Services',
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: Colors.grey,
+                    // color: Colors.grey,
                   ),
                 ),
                 Text(
                   'View All',
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: Colors.grey,
+                    // color: Colors.grey,
                   ),
                 ),
               ],
@@ -84,10 +95,12 @@ class _HomePageState extends State<HomePage> {
               }
             },
             builder: (context, state) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+              return Center(
+                child: Wrap(
+                  runAlignment: WrapAlignment.start,
+                  runSpacing: 16.sp,
+                  spacing: 16.sp,
+                  alignment: WrapAlignment.start,
                   children: [
                     MaterialButton(
                       onPressed: () async {
@@ -98,19 +111,32 @@ class _HomePageState extends State<HomePage> {
                           name: "Check Balance", icon: Icons.account_balance),
                     ),
                     MaterialButton(
-                      onPressed: () async {
-                        _showRechargeDialog(context,SimType.ntc);
+                      onPressed: () {
+                        Navigator.pushNamed(context, RoutesName.topup);
                       },
                       child: const UserService(
-                          name: "NT Topup", icon: Icons.mobile_friendly),
+                        name: "Topup",
+                        icon: Icons.mobile_friendly,
+                      ),
                     ),
                     MaterialButton(
-                      onPressed: () async {
-                        _showRechargeDialog(context,SimType.ncell);
+                      onPressed: () {
+                        Navigator.pushNamed(context, RoutesName.sendMoney);
                       },
                       child: const UserService(
-                        name: "NCELL Topup",
-                        icon: Icons.mobile_friendly,
+                        name: "Send Money",
+                        icon: Icons.money,
+                        imageUrl: sendMoneyIcon,
+                      ),
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, RoutesName.requestMoney);
+                      },
+                      child: const UserService(
+                        name: "Request Money",
+                        icon: Icons.request_quote,
+                        imageUrl: requestMoneyIcon,
                       ),
                     ),
                   ],
@@ -142,21 +168,6 @@ class _HomePageState extends State<HomePage> {
               child: const Text('OK'),
             ),
           ],
-        );
-      },
-    );
-  }
-
-  void _showRechargeDialog(BuildContext context,SimType sim) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return  AlertDialog(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16.0)),
-          ),
-          title: const Text('Enter Details'),
-          content: RechargePageDialog(simType: sim),
         );
       },
     );

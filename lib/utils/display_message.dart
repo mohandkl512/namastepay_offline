@@ -17,5 +17,8 @@ class DisplayMessage {
   static const String servicesCurrentlyNotAvailable =
       "Services are currently unavailable";
   static const String unexpectedError = "Some unexpected error occured";
-  static const String registrationFlowActive = "Your contact number might not have been registered in Namastepay wallet.";
+  static const String registrationFlowActive =
+      "Your contact number might not have been registered in Namastepay wallet.";
+  static const String timeoutException =
+      "It took too long to respond, try again later";
 }

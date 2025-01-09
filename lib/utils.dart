@@ -6,11 +6,7 @@ import 'package:ussd_npay/utils/subscription_id.dart';
 
 class Utils {
   static bool isPinValid(String pin) {
-    if (Validator.amountValidator(pin) == null) {
-      return true;
-    }
-    return false;
-    // return pin.length >= 4 && RegExp(r'^\d+$').hasMatch(pin);
+    return pin.length >= 4 && RegExp(r'^\d+$').hasMatch(pin);
   }
 
   static bool isValidPhoneNumber(String phoneNumber) {

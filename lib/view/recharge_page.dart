@@ -77,7 +77,6 @@ class _FormDialogState extends State<RechargePageDialog> {
               validator:Validator.validatePin,
             ),
             SizedBox(height: 16.sp),
-
             // Amount field
             TextFormField(
               controller: _amountController,

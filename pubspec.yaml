@@ -72,6 +72,9 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/npay.png
+    - assets/images/hand.png
+    - assets/images/send_money.png
+    - assets/images/topup.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
