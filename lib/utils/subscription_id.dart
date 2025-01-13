@@ -1,3 +1,3 @@
 class SubscriptionID{
-static const  int auto= -1000;
+static const  int auto= -1;
 }

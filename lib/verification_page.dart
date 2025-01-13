@@ -60,9 +60,7 @@ class VerificationPage extends StatelessWidget {
                     onPressed: () async {
                       final phone = phoneController.text;
                       final password = passwordController.text;
-                      await context
-                          .read<VerificationCubit>()
-                          .validateAndSendUSSD(phone, password);
+                  
                     },
                     child: const Text('Submit'),
                   );

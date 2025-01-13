@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:ussd_npay/viewmodels/landline_cubit.dart';
 
-class CustomNumberPad extends StatefulWidget {
-  const CustomNumberPad({super.key});
+class NumpadForLandline extends StatefulWidget {
+  const NumpadForLandline({super.key});
 
   @override
-  _CustomNumberPadState createState() => _CustomNumberPadState();
+  _NumpadForLandlineState createState() => _NumpadForLandlineState();
 }
 
-class _CustomNumberPadState extends State<CustomNumberPad> {
+class _NumpadForLandlineState extends State<NumpadForLandline> {
   String input = ""; // To store the entered input as string
 
   // Method to handle number button press
@@ -19,7 +20,7 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
         input += number;
       }
     });
-    context.read<RechargeCubit>().updateAmount(int.parse(input));
+    context.read<LandlineCubit>().updateAmount(int.parse(input));
   }
 
   // Method to handle delete button
@@ -30,7 +31,6 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
       }
     });
   }
-  // Method to submit input
 
   // Number Button Widget
   Widget _buildNumberButton(String number) {
@@ -83,7 +83,7 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
                     // Submit Button
                     onPressed: () {
                       context
-                          .read<RechargeCubit>()
+                          .read<LandlineCubit>()
                           .updateAmount(int.parse(input));
                     },
                     style: ElevatedButton.styleFrom(
@@ -100,16 +100,17 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
               child: Row(
                 children: [
                   const SizedBox(width: 16),
-                  const Text(
+                  Text(
                     "रु.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     input.isEmpty ? "" : input,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 32, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

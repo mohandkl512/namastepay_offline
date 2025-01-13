@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:ussd_npay/viewmodels/send_money_cubit.dart';
 
-class CustomNumberPad extends StatefulWidget {
-  const CustomNumberPad({super.key});
+class NumpadSendMoney extends StatefulWidget {
+  const NumpadSendMoney({super.key});
 
   @override
   _CustomNumberPadState createState() => _CustomNumberPadState();
 }
 
-class _CustomNumberPadState extends State<CustomNumberPad> {
+class _CustomNumberPadState extends State<NumpadSendMoney> {
   String input = ""; // To store the entered input as string
 
   // Method to handle number button press
@@ -19,7 +20,7 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
         input += number;
       }
     });
-    context.read<RechargeCubit>().updateAmount(int.parse(input));
+    context.read<SendMoneyCubit>().updateAmount(int.parse(input));
   }
 
   // Method to handle delete button
@@ -30,7 +31,6 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
       }
     });
   }
-  // Method to submit input
 
   // Number Button Widget
   Widget _buildNumberButton(String number) {
@@ -38,7 +38,7 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
       onPressed: () => _onNumberPress(number),
       style: ElevatedButton.styleFrom(
         shape: const CircleBorder(), // Circular buttons
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
       ),
       child: Text(
         number,
@@ -52,10 +52,8 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Display entered number
 
         const SizedBox(height: 16),
-        // Number Pad Grid
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -83,7 +81,7 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
                     // Submit Button
                     onPressed: () {
                       context
-                          .read<RechargeCubit>()
+                          .read<SendMoneyCubit>()
                           .updateAmount(int.parse(input));
                     },
                     style: ElevatedButton.styleFrom(
@@ -100,16 +98,16 @@ class _CustomNumberPadState extends State<CustomNumberPad> {
               child: Row(
                 children: [
                   const SizedBox(width: 16),
-                  const Text(
+                   Text(
                     "रु.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     input.isEmpty ? "" : input,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 32, fontWeight: FontWeight.bold),
+                    style:  TextStyle(
+                        fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

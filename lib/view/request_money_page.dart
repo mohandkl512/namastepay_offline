@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
-import 'package:ussd_npay/utils/operators.dart';
-import '../viewmodels/home_cubit.dart';
-import '../widgets/num_pad.dart';
+import 'package:ussd_npay/viewmodels/request_cubit.dart';
+import 'package:ussd_npay/viewmodels/states/request_state.dart';
+import 'package:ussd_npay/widgets/numpad_request_money.dart';
+import '../routes/route_path.dart';
 
 class RequestMoneyScreen extends StatefulWidget {
   const RequestMoneyScreen({super.key});
@@ -19,10 +19,8 @@ class RequestMoneyScreen extends StatefulWidget {
 class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
   final TextEditingController _phoneController = TextEditingController();
   bool _isFormValid = false;
-  int? amount;
+  int amount = 0;
 
-  // List of available network operators
-  final List<String> operators = [NT, NCELL];
   @override
   void initState() {
     super.initState();
@@ -38,91 +36,60 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
     });
   }
 
-  void _showPinDialog() {
-    if (amount == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("Enter Amount and Press Tick"),
-          backgroundColor: Colors.red[400],
-          duration: const Duration(
-            seconds: 2,
-          ),
-        ),
-      );
-    } else {
-      TextEditingController pinController = TextEditingController();
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text("Enter PIN"),
-          content: TextField(
-            controller: pinController,
-            keyboardType: TextInputType.number,
-            obscureText: true,
-            decoration: InputDecoration(
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                bool validPin = Utils.isPinValid(pinController.text);
-                if (validPin) {
-                  Navigator.pop(context);
-                  _processRequest(pinController.text);
-                } else {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text("Invalid Pin"),
-                      backgroundColor: Colors.red[400],
-                      duration: const Duration(
-                        seconds: 2,
-                      ),
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
-              child: const Text("Proceed"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
+  // void _showPinDialog() {
+  //   TextEditingController pinController = TextEditingController();
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  //       title: const Text("Enter PIN"),
+  //       content: TextField(
+  //         controller: pinController,
+  //         keyboardType: TextInputType.number,
+  //         obscureText: true,
+  //         decoration: InputDecoration(
+  //           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+  //         ),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: const Text("Cancel"),
+  //         ),
+  //         ElevatedButton(
+  //           onPressed: () {
+  //             bool validPin = Utils.isPinValid(pinController.text);
+  //             if (validPin) {
+  //               Navigator.pop(context);
+  //               _processRequest(pinController.text);
+  //             } else {
+  //               Navigator.pop(context);
+  //               ScaffoldMessenger.of(context).showSnackBar(
+  //                 SnackBar(
+  //                   content: const Text("Invalid Pin"),
+  //                   backgroundColor: Colors.red[400],
+  //                   duration: const Duration(
+  //                     seconds: 2,
+  //                   ),
+  //                 ),
+  //               );
+  //             }
+  //           },
+  //           style: ElevatedButton.styleFrom(
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //             ),
+  //           ),
+  //           child: const Text("Proceed"),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  void _processRequest(String pin) async {
-    showLoadingDialog(context);
-    await Future.delayed(const Duration(seconds: 2));
-    if (mounted) {
-      if (Utils.isPinValid(pin) && amount != null) {
-        final homeCubit = context.read<HomeCubit>();
-        await homeCubit.requestMoney(_phoneController.text, amount!, pin);
-        if (mounted) {
-          Navigator.pushNamed(
-            context,
-            RoutesName.actionCompleted,
-          );
-        }
-      }
-      if (mounted) {
-        Navigator.pop(context);
-        Navigator.pushNamed(
-          context,
-          RoutesName.actionCompleted,
-        );
-      }
-    }
+  void _processRequest() async {
+    final requestCubit = context.read<RequestCubit>();
+    await requestCubit.requestMoney(_phoneController.text, amount);
   }
 
   @override
@@ -147,24 +114,58 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            CustomNumberPad(
-              onSubmit: (a) {
-                setState(() {
-                  amount = a;
-                });
-              },
-            ),
+            const NumpadRequestMoney(),
             const SizedBox(height: 32),
-            Center(
-              child: ElevatedButton(
-                onPressed: _isFormValid ? _showPinDialog : null,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: _isFormValid ? Colors.blue : Colors.grey,
-                ),
-                child: const Text("Send Request"),
-              ),
+            BlocConsumer<RequestCubit, RequestState>(
+              listener: (context, state) {
+                if (state is Requested) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RoutesName.requestCompleted,
+                    (_) => false,
+                  );
+                } else if (state is RequestError) {
+                  // showErrorDialog(context, "Error Occured", state.message);
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RoutesName.requestCompleted,
+                    (_) => false,
+                  );
+                } else if (state is Requesting) {
+                  showLoadingDialog(context);
+                }
+              },
+              builder: (context, state) {
+                return Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      amount = (state is RequestInitial) ? state.amount : 0;
+                      if (_isFormValid) {
+                        if (amount > 0) {
+                          _processRequest();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                  "Enter Amount and tick the checkmark"),
+                              backgroundColor: Colors.red[400],
+                              duration: const Duration(
+                                seconds: 3,
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      backgroundColor: _isFormValid ? Colors.blue : Colors.grey,
+                    ),
+                    child: const Text("Send Request"),
+                  ),
+                );
+              },
             ),
           ],
         ),

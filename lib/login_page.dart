@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sim_data/sim_data_model.dart';
 import 'package:ussd_npay/routes/route_path.dart';
+import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/viewmodels/verification_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/verification_state.dart';
+import 'package:ussd_npay/widgets/phone_dropdown.dart';
 import 'utils/field_validator.dart';
 import 'utils/loading_dialog.dart';
 import 'widgets/custom_text_form_field.dart';
@@ -21,9 +24,19 @@ class _LoginPageState extends State<LoginPage> {
   final _formData = GlobalKey<FormState>();
 
   bool isLoading = false;
-  bool visiblePin = false;
-  final TextEditingController _msisdnController = TextEditingController();
+  bool invisiblePin = true;
   final TextEditingController _pinController = TextEditingController();
+  List<SimDataModel> simInfos = [];
+  SimDataModel? selectedSim;
+  @override
+  void initState() {
+    super.initState();
+    Utils.getNumbers().then((value) {
+      setState(() {
+        simInfos = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,18 +97,17 @@ class _LoginPageState extends State<LoginPage> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
-                              CustomTextFormField(
-                                controller: _msisdnController,
-                                labelText: "Mobile Number",
-                                fillColor:
-                                    const Color.fromARGB(255, 255, 255, 255),
-                                filled: true,
-                                borderDecoration: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                ),
-                                validator: Validator.validatePhoneNumber,
-                              ),
+                              simInfos.isEmpty
+                                  ? const Text("Loading your sim data")
+                                  : PhoneDropdown(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedSim = value;
+                                        });
+                                      },
+                                      items: simInfos,
+                                      selectedValue: selectedSim,
+                                    ),
                               SizedBox(height: height * 0.018),
                               Stack(
                                 children: [
@@ -104,6 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                                     hintText: 'XXXX',
                                     labelText: "Pin",
                                     textInputType: TextInputType.number,
+                                    obscureText: invisiblePin,
                                     fillColor: const Color.fromARGB(
                                       255,
                                       255,
@@ -124,11 +137,11 @@ class _LoginPageState extends State<LoginPage> {
                                     child: IconButton(
                                       onPressed: () {
                                         setState(
-                                          () => visiblePin = !visiblePin,
+                                          () => invisiblePin = !invisiblePin,
                                         );
                                       },
                                       icon: Icon(
-                                        visiblePin
+                                        invisiblePin
                                             ? CupertinoIcons.eye
                                             : CupertinoIcons.eye_slash_fill,
                                       ),
@@ -190,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 context
                                                     .read<VerificationCubit>()
                                                     .validateAndSendUSSD(
-                                                      _msisdnController.text,
+                                                      selectedSim,
                                                       _pinController.text,
                                                     );
                                               }

@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
-import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
-import 'package:ussd_npay/viewmodels/states/send_money_state.dart';
+import 'package:ussd_npay/viewmodels/landline_cubit.dart';
+import 'package:ussd_npay/viewmodels/states/landline_recharge_state.dart';
+import 'package:ussd_npay/widgets/numpad_landline_recharge.dart';
 import '../routes/route_path.dart';
-import '../viewmodels/send_money_cubit.dart';
-import '../widgets/numpad_send_money.dart';
 
-class SendMoneyScreen extends StatefulWidget {
-  const SendMoneyScreen({super.key});
+class LandlineRechargePage extends StatefulWidget {
+  const LandlineRechargePage({super.key});
 
   @override
-  _SendMoneyScreenState createState() => _SendMoneyScreenState();
+  _LandlineRechargePageState createState() => _LandlineRechargePageState();
 }
 
-class _SendMoneyScreenState extends State<SendMoneyScreen> {
+class _LandlineRechargePageState extends State<LandlineRechargePage> {
   final TextEditingController _phoneController = TextEditingController();
   bool _isFormValid = false;
   int amount = 0;
-
-  // List of available network operators
   @override
   void initState() {
     super.initState();
@@ -31,8 +29,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
     dPrint(amount);
     dPrint(_phoneController.text);
     setState(() {
-      _isFormValid =
-          Validator.validatePhoneNumber(_phoneController.text) == null;
+      _isFormValid = Utils.isValidLandline(_phoneController.text);
     });
   }
 
@@ -88,14 +85,14 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
   // }
 
   void _processRequest() async {
-    final requestCubit = context.read<SendMoneyCubit>();
-    await requestCubit.sendMoney(_phoneController.text, amount);
+    final requestCubit = context.read<LandlineCubit>();
+    await requestCubit.payBill( amount, _phoneController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Send Money")),
+      appBar: AppBar(title: const Text("Landline Recharge")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -105,7 +102,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
             TextField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
-              maxLength: 10,
+              maxLength: 9,
               decoration: InputDecoration(
                 labelText: "Phone Number",
                 border: OutlineInputBorder(
@@ -114,24 +111,23 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            const NumpadSendMoney(),
+            const NumpadForLandline(),
             const SizedBox(height: 32),
-            BlocConsumer<SendMoneyCubit, SendMoneyState>(
+            BlocConsumer<LandlineCubit, LandlineRechargeState>(
               listener: (context, state) {
-                dPrint(state);
-                if (state is SentMoney) {
+                if (state is LandlineRechargeSelected) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    RoutesName.moneySent,
+                    RoutesName.landlineSucess,
                     (_) => false,
                   );
-                } else if (state is SendMoneyError) {
+                } else if (state is LandlineError) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    RoutesName.moneySent,
+                    RoutesName.landlineSucess,
                     (_) => false,
                   );
-                } else if (state is SendingMoney) {
+                } else if (state is LandlineRecharging) {
                   showLoadingDialog(context);
                 }
               },
@@ -139,7 +135,8 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                 return Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      amount = (state is SendMoneyInitial) ? state.amount : 0;
+                      amount =
+                          (state is LandlineRechargeInitial) ? state.amount : 0;
                       if (_isFormValid) {
                         if (amount > 0) {
                           _processRequest();
@@ -155,13 +152,23 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                             ),
                           );
                         }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                const Text("Landline number incorrect format"),
+                            backgroundColor: Colors.red[400],
+                            duration: const Duration(
+                              seconds: 3,
+                            ),
+                          ),
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
-                      backgroundColor:
-                          _isFormValid ? Colors.blue : Colors.grey,
+                      backgroundColor: _isFormValid ? Colors.blue : Colors.grey,
                     ),
                     child: const Text("Send Request"),
                   ),

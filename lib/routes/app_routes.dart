@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ussd_npay/home_page.dart';
 import 'package:ussd_npay/login_page.dart';
+import 'package:ussd_npay/view/landline_recharge_page.dart';
+import 'package:ussd_npay/view/landline_sucess_page.dart';
 import 'package:ussd_npay/view/recharge_screen.dart';
+import 'package:ussd_npay/view/request_sucess.dart';
 import 'package:ussd_npay/view/send_money_page.dart';
-import 'package:ussd_npay/view/sucess_page.dart';
-
+import 'package:ussd_npay/view/recharge_sucess_screen.dart';
 import '../view/request_money_page.dart';
+import '../view/sucess_money_send.dart';
 import 'route_path.dart';
 
 class AppRoutes {
@@ -25,13 +28,25 @@ class AppRoutes {
       case RoutesName.requestMoney:
         return MaterialPageRoute(
             builder: (BuildContext context) => const RequestMoneyScreen());
-      case RoutesName.actionCompleted:
+      case RoutesName.rechargeComplete:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SuccessScreen());
       case RoutesName.sendMoney:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SendMoneyScreen());
-      // if none of these above cases are met then return this
+      case RoutesName.requestCompleted:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const RequestSucess());
+      case RoutesName.moneySent:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SucessMoneySend());
+      case RoutesName.landlineRecharge:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const LandlineRechargePage());
+      case RoutesName.landlineSucess:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                const LandlineSucessPage()); // if none of these above cases are met then return this
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

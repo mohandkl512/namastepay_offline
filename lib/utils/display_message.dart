@@ -21,4 +21,5 @@ class DisplayMessage {
       "Your contact number might not have been registered in Namastepay wallet.";
   static const String timeoutException =
       "It took too long to respond, try again later";
+  static const String transactionFailed ="Your Transaction has Failed.Please Try Again.\nReason: Transfer amount more than maximum allowed transfer amount.";
 }

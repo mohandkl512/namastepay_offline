@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/routes/route_path.dart';
+import 'package:ussd_npay/utils/custom_toast.dart';
 import 'package:ussd_npay/utils/images.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/viewmodels/home_cubit.dart';
@@ -23,6 +24,38 @@ class _HomePageState extends State<HomePage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'NamastePay',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ListTile(
+              title: const Text('About Us'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Privacy Policy'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Image.asset(
@@ -84,66 +117,84 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          BlocConsumer<HomeCubit, ServiceState>(
-            listener: (context, state) {
-              if (state is ServiceSelected) {
-                Navigator.pop(context);
-                _showCustomDialog(context, "Your Account Balance",
-                    findStringUntilNPR(state.serviceCode ?? "NULL NPR."));
-              } else if (state is ServiceLoading) {
-                showLoadingDialog(context);
-              }
-            },
-            builder: (context, state) {
-              return Center(
-                child: Wrap(
-                  runAlignment: WrapAlignment.start,
-                  runSpacing: 16.sp,
-                  spacing: 16.sp,
-                  alignment: WrapAlignment.start,
-                  children: [
-                    MaterialButton(
-                      onPressed: () async {
-                        final homeCubit = context.read<HomeCubit>();
-                        await homeCubit.checkBalance();
-                      },
-                      child: const UserService(
-                          name: "Check Balance", icon: Icons.account_balance),
+          BlocListener<HomeCubit, ServiceState>(
+              listener: (context, state) {
+                if (state is ServiceSelected) {
+                  Navigator.pop(context);
+                  _showCustomDialog(context, "Your Account Balance",
+                      findStringUntilNPR(state.serviceCode ?? "NULL NPR."));
+                } else if (state is ServiceLoading) {
+                  showLoadingDialog(context);
+                }
+              },
+              child: Wrap(
+                runAlignment: WrapAlignment.start,
+                runSpacing: 16.sp,
+                spacing: 8.sp,
+                alignment: WrapAlignment.start,
+                children: [
+                  MaterialButton(
+                    onPressed: () async {
+                      final homeCubit = context.read<HomeCubit>();
+                      await homeCubit.checkBalance();
+                    },
+                    child: const UserService(
+                        name: "Check Balance", icon: Icons.account_balance),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesName.topup);
+                    },
+                    child: const UserService(
+                      name: "Topup",
+                      icon: Icons.mobile_friendly,
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, RoutesName.topup);
-                      },
-                      child: const UserService(
-                        name: "Topup",
-                        icon: Icons.mobile_friendly,
-                      ),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesName.sendMoney);
+                    },
+                    child: const UserService(
+                      name: "Send Money",
+                      icon: Icons.money,
+                      imageUrl: sendMoneyIcon,
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, RoutesName.sendMoney);
-                      },
-                      child: const UserService(
-                        name: "Send Money",
-                        icon: Icons.money,
-                        imageUrl: sendMoneyIcon,
-                      ),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesName.requestMoney);
+                    },
+                    child: const UserService(
+                      name: "Request Money",
+                      icon: Icons.request_quote,
+                      imageUrl: requestMoneyIcon,
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, RoutesName.requestMoney);
-                      },
-                      child: const UserService(
-                        name: "Request Money",
-                        icon: Icons.request_quote,
-                        imageUrl: requestMoneyIcon,
-                      ),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesName.landlineRecharge);
+                    },
+                    child: const UserService(
+                      name: "Landline Recharge",
+                      icon: Icons.request_quote,
+                      imageUrl: landline,
                     ),
-                  ],
-                ),
-              );
-            },
-          )
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      showCustomToast(context, "Service Not Available Yet");
+                    },
+                    child:
+                        const UserService(name: "Internet", icon: Icons.wifi),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      showCustomToast(context, "Service in progress");
+                    },
+                    child: const UserService(name: "TV", icon: Icons.tv),
+                  ),
+                ],
+              ))
         ],
       ),
     );

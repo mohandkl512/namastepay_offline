@@ -6,7 +6,15 @@ class RoutesName {
   static const String topup = "/topup";
   static const String requestMoney = "/request_money";
   static const String sendMoney= "/send_money";
-  static const String actionCompleted= "/action_completed";
+  static const String rechargeComplete= "/recharge_complete";
+  static const String requestCompleted= "/request_complete";
+  static const String moneySent= "/money_sent";
+  static const String landlineRecharge= "/landline_recharge";
+  static const String landlineSucess= "/landline_sucess";
+
+
+
+
 
   
 }

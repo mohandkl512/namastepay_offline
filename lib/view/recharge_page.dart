@@ -5,6 +5,7 @@ import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/sim_type.dart';
 import 'package:ussd_npay/viewmodels/home_cubit.dart';
+import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/home_state.dart';
 
 class RechargePageDialog extends StatefulWidget {
@@ -94,7 +95,7 @@ class _FormDialogState extends State<RechargePageDialog> {
             // Submit button
             ElevatedButton(
               onPressed: () async {
-                final homecubit = context.read<HomeCubit>();
+                final homecubit = context.read<RechargeCubit>();
                 if (_formKey.currentState?.validate() ?? false) {
                   // Process the form
                   final phoneNumber = _phoneController.text;

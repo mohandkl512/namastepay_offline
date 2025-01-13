@@ -13,6 +13,7 @@ class Validator {
     }
     return null;
   }
+  
 
   static String? amountValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -20,7 +21,7 @@ class Validator {
     }
 
     // Try to parse the value to a number
-    final amount = double.tryParse(value);
+    final amount = int.tryParse(value);
 
     if (amount == null) {
       return 'Invalid amount';

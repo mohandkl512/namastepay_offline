@@ -18,10 +18,8 @@ class UserService extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.sp),
-        color: Colors.grey.shade200,
       ),
-      height: 100,
-      padding: EdgeInsets.all(16.sp),
+      padding: const EdgeInsets.all(4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,

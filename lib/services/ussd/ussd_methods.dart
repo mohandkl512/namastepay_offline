@@ -1,4 +1,5 @@
 import 'package:ussd_npay/utils/base_ussd_codes.dart';
+import 'package:ussd_npay/utils/debug_print.dart';
 
 class UssdMethods {
   /* This method directly checks account balance with provided pin. with option 2*/
@@ -55,5 +56,13 @@ class UssdMethods {
     String amount,
   ) {
     return "*${BaseUssdCodes.baseCodeUAT}*$pin*6*5*$toContact*$amount*$pin#";
+  }
+
+  String internetPayment(
+    String username,
+    String pin,
+  ) {
+    dPrint("*${BaseUssdCodes.baseCodeUAT}*$pin*6*1*6*$username*1*$pin#");
+    return "*${BaseUssdCodes.baseCodeUAT}*$pin*6*1*6*$username*1*$pin#";
   }
 }
