@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ussd_npay/home_page.dart';
+import 'package:ussd_npay/view/home_page.dart';
 import 'package:ussd_npay/login_page.dart';
 import 'package:ussd_npay/view/landline_recharge_page.dart';
 import 'package:ussd_npay/view/landline_sucess_page.dart';

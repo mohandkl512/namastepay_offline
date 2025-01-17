@@ -123,9 +123,6 @@ class _RechargeScreenState extends State<RechargeScreen> {
                     ),
 
               const SizedBox(height: 8),
-              // const CustomNumberPad(),
-              // const Text("Enter Amount"),
-              const SizedBox(height: 8),
 
               TextFormField(
                 controller: _amountController,

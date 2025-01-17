@@ -33,8 +33,6 @@ class VerificationCubit extends Cubit<VerificationState> {
           code: ussdMethods.verificationCode(pin),
           subscriptionId: userId,
         );
-        dPrint(pin);
-        dPrint("Message: $response");
         final message =
             checkMessageAndRespond(response ?? " some error occured. ");
         if (message == DisplayMessage.authenticated) {

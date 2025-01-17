@@ -23,7 +23,6 @@ class HomeCubit extends Cubit<ServiceState> {
     emit(ServiceLoading());
     try {
       if (authProvider.authState is Verified) {
-        
         Verified verified = authProvider.authState as Verified;
         dPrint("ID: ${verified.subscriptionId}");
         String? response = await UssdAdvanced.sendAdvancedUssd(
@@ -42,36 +41,46 @@ class HomeCubit extends Cubit<ServiceState> {
     }
   }
 
-  Future<void> internetPayment(
-    String username,
-    String isp
-  ) async {
+  Future<void> internetPayment(String username, String isp) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
+    Verified verified = authProvider.authState as Verified;
 
-    emit(ServiceLoading());
-    try {
-      if (authProvider.authState is Verified) {
-        Verified verified = authProvider.authState as Verified;
-        String requestMoneycode =
-            ussdMethods.internetPayment(username, verified.pin,isp);
-        String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: requestMoneycode,
-          subscriptionId: verified.subscriptionId,
-        );
-        dPrint(response);
-        // emit(ServiceSelected(response));
-      }
-    } on PlatformException catch (exception) {
-      dPrint(exception.details);
-      dPrint(exception.message);
-      dPrint(exception.code);
-      emit(ServiceError(ErrorMessage.unexpectedError));
-    } on TimeoutException catch (exception) {
-      dPrint(exception);
-      emit(ServiceError(DisplayMessage.timeoutException));
-    } on MissingPluginException catch (exception) {
-      dPrint(exception);
-      emit(ServiceError(DisplayMessage.unexpectedError));
-    }
+    String _response = "empty";
+    String? _res = await UssdAdvanced.multisessionUssd(
+        code: "*114*6478*", subscriptionId: verified.subscriptionId);
+    // setState(() {
+    //   _response = _res ?? "";
+    // });
+    String? _res2 = await UssdAdvanced.sendMessage('2');
+    // setState(() {
+    //   _response = _res2 ?? "";
+    // });
+    await UssdAdvanced.cancelSession();
+    dPrint(_response);
+    // emit(ServiceLoading());
+    // try {
+    //   if (authProvider.authState is Verified) {
+    //     Verified verified = authProvider.authState as Verified;
+    //     String requestMoneycode =
+    //         ussdMethods.internetPayment(username, verified.pin,isp);
+    //     String? response = await UssdAdvanced.sendAdvancedUssd(
+    //       code: requestMoneycode,
+    //       subscriptionId: verified.subscriptionId,
+    //     );
+    //     dPrint(response);
+    //     // emit(ServiceSelected(response));
+    //   }
+    // } on PlatformException catch (exception) {
+    //   dPrint(exception.details);
+    //   dPrint(exception.message);
+    //   dPrint(exception.code);
+    //   emit(ServiceError(ErrorMessage.unexpectedError));
+    // } on TimeoutException catch (exception) {
+    //   dPrint(exception);
+    //   emit(ServiceError(DisplayMessage.timeoutException));
+    // } on MissingPluginException catch (exception) {
+    //   dPrint(exception);
+    //   emit(ServiceError(DisplayMessage.unexpectedError));
+    // }
   }
 }
