@@ -7,6 +7,8 @@ import 'package:ussd_npay/view/recharge_screen.dart';
 import 'package:ussd_npay/view/request_sucess.dart';
 import 'package:ussd_npay/view/send_money_page.dart';
 import 'package:ussd_npay/view/recharge_sucess_screen.dart';
+import 'package:ussd_npay/view/tv_payment_page.dart';
+import 'package:ussd_npay/view/tv_sucess_page.dart';
 import '../view/request_money_page.dart';
 import '../view/sucess_money_send.dart';
 import 'route_path.dart';
@@ -47,6 +49,12 @@ class AppRoutes {
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 const LandlineSucessPage()); // if none of these above cases are met then return this
+      case RoutesName.tvSuccess:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const TvSucessPage());
+      case RoutesName.tvPaymentPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const TvPaymentPage());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

@@ -5,7 +5,8 @@ class VerificationInitial extends VerificationState {}
 class Verified extends VerificationState {
   String pin;
   int subscriptionId;
-  Verified(this.pin,this.subscriptionId);
+  String? sucessMessage;
+  Verified(this.pin,this.subscriptionId,this.sucessMessage);
 }
 
 class Verifying extends VerificationState {}

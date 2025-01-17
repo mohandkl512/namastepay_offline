@@ -7,6 +7,7 @@ import 'package:ussd_npay/viewmodels/landline_cubit.dart';
 import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
 import 'package:ussd_npay/viewmodels/request_cubit.dart';
 import 'package:ussd_npay/viewmodels/send_money_cubit.dart';
+import 'package:ussd_npay/viewmodels/tv_cubit.dart';
 import 'package:ussd_npay/viewmodels/verification_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/verification_state.dart';
 import 'authentication_provider.dart';
@@ -36,8 +37,11 @@ void main(List<String> args) {
         BlocProvider(
           create: (context) => SendMoneyCubit(),
         ),
-           BlocProvider(
+        BlocProvider(
           create: (context) => LandlineCubit(),
+        ),
+        BlocProvider(
+          create: (context) => TvCubit(),
         ),
       ],
       child: ResponsiveSizer(

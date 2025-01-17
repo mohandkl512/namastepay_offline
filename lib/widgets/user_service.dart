@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:ussd_npay/utils/app_colors.dart';
 
 class UserService extends StatelessWidget {
   final String name;
@@ -20,6 +21,8 @@ class UserService extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.sp),
       ),
       padding: const EdgeInsets.all(4.0),
+      width: 16.w,
+      height: 8.h,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
@@ -33,17 +36,14 @@ class UserService extends StatelessWidget {
                   imageUrl!,
                   width: 20.sp,
                   height: 20.sp,
+                  color: AppColors.appBarColorBlueBottom,
                 ),
-          SizedBox(height: 16.sp),
-          SizedBox(
-            width: 80,
+          SizedBox(height: 8.sp),
+          Flexible(
             child: Text(
               name,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16.sp,
-                height: 4.sp,
-              ),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ],

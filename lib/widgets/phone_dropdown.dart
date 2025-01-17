@@ -23,7 +23,7 @@ class PhoneDropdown extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: DropdownButton<SimDataModel>(
           value: selectedValue,
-          hint: const Text('Select an Option'),
+          hint: const Text('Select a SIM'),
           isExpanded: true,
           underline: const SizedBox(),
           icon: const Icon(Icons.arrow_drop_down),

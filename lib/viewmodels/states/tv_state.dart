@@ -1,31 +1,33 @@
-// import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 
-// abstract class TvState extends Equatable {}
+abstract class TvState extends Equatable {}
 
-// class RequestInitial extends TvState {
-//   int amount;
-//    RequestInitial(this.amount);
-//   @override
-//   List<Object?> get props => [amount];
-// }
+class TvInitial extends TvState {
+  int amount;
+  String? tvType;
+  String? paymentOption;
+  TvInitial({required this.amount, this.tvType, this.paymentOption});
+  @override
+  List<Object?> get props => [amount];
+}
 
-// class Requested extends TvState {
-//   final String? response;
-//   Requested(this.response);
+class TvRequestSucessfull extends TvState {
+  final String? response;
+  TvRequestSucessfull(this.response);
 
-//   @override
-//   List<Object?> get props => [ response];
-// }
+  @override
+  List<Object?> get props => [response];
+}
 
-// class Requesting extends TvState {
-//   @override
-//   List<Object?> get props => [];
-// }
+class TvRequestLoading extends TvState {
+  @override
+  List<Object?> get props => [];
+}
 
-// class RequestError extends R {
-//   final String message;
-//   RequestError(this.message);
+class TvRequestError extends TvState {
+  final String message;
+  TvRequestError(this.message);
 
-//   @override
-//   List<Object?> get props => [message];
-// }
+  @override
+  List<Object?> get props => [message];
+}

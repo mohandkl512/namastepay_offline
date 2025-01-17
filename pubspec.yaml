@@ -76,6 +76,7 @@ flutter:
     - assets/images/send_money.png
     - assets/images/topup.png
     - assets/images/telephone.png
+    - assets/icons/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils.dart';
+import 'package:ussd_npay/utils/app_colors.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
+import 'package:ussd_npay/utils/npay_texts.dart';
 import 'package:ussd_npay/utils/operators.dart';
 import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/recharge_state.dart';
@@ -32,6 +35,8 @@ class _RechargeScreenState extends State<RechargeScreen> {
   }
 
   void _validateForm() {
+    _formKey.currentState?.validate();
+
     setState(() {
       _isFormValid =
           Validator.validatePhoneNumber(_phoneController.text) == null &&
@@ -40,29 +45,25 @@ class _RechargeScreenState extends State<RechargeScreen> {
     });
   }
 
-  void _processRecharge(String? pin) async {
-    if (pin != null) {
-      if (Utils.isPinValid(pin)) {
-        if (mounted) {
-          final homeCubit = context.read<RechargeCubit>();
-          if (Utils.checkNumberPrefix(_phoneController.text) == MNO.nt) {
-            await homeCubit.rechargeNamaste(
-                pin, int.parse(_amountController.text), _phoneController.text);
-          } else if (_selectedOperator == MNO.ncell) {
-            await homeCubit.rechargeNcell(
-                pin, int.parse(_amountController.text), _phoneController.text);
-          }
-        }
+  void _processRecharge() async {
+    if (mounted) {
+      final homeCubit = context.read<RechargeCubit>();
+      if (Utils.checkNumberPrefix(_phoneController.text) == MNO.nt) {
+        await homeCubit.rechargeNamaste(
+            int.parse(_amountController.text), _phoneController.text);
+      } else if (_selectedOperator == MNO.ncell) {
+        await homeCubit.rechargeNcell(
+            int.parse(_amountController.text), _phoneController.text);
       }
     } else {
       if (mounted) {
         final homeCubit = context.read<RechargeCubit>();
         if (Utils.checkNumberPrefix(_phoneController.text) == MNO.nt) {
           await homeCubit.rechargeNamaste(
-              "pin", int.parse(_amountController.text), _phoneController.text);
+              int.parse(_amountController.text), _phoneController.text);
         } else if (_selectedOperator == MNO.ncell) {
           await homeCubit.rechargeNcell(
-              "pin", int.parse(_amountController.text), _phoneController.text);
+              int.parse(_amountController.text), _phoneController.text);
         }
       }
     }
@@ -71,7 +72,12 @@ class _RechargeScreenState extends State<RechargeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Recharge")),
+      appBar: AppBar(
+        title: Text(
+          "Mobile Topup",
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Form(
@@ -84,12 +90,14 @@ class _RechargeScreenState extends State<RechargeScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
+                validator: Validator.validatePhoneNumber,
                 onChanged: (value) {
                   if (value.length == 10) {
                     setState(() {
                       _selectedOperator = Utils.checkNumberPrefix(value);
                     });
                   }
+                  _formKey.currentState?.validate();
                 },
                 decoration: InputDecoration(
                   labelText: "Phone Number",
@@ -104,21 +112,39 @@ class _RechargeScreenState extends State<RechargeScreen> {
                   : ChoiceChip(
                       label: Text(
                         _selectedOperator!,
-                        style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                        style:  TextStyle(
+                            color: _selectedOperator == MNO.nt
+                                ? AppColors.buttonColor
+                                : Colors.deepPurpleAccent,
+                            fontWeight: FontWeight.bold),
                       ),
                       selected: true,
-                      selectedColor: _selectedOperator == MNO.ncell
-                          ? Colors.purple
-                          : Colors.blue,
+                      selectedColor: Colors.white,
                     ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               // const CustomNumberPad(),
+              // const Text("Enter Amount"),
+              const SizedBox(height: 8),
+
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Amount',
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 8.0,
+                    ), // Add padding to ensure proper spacing
+                    child: Text(
+                      NpayTexts.rs, // Currency symbol or any other text
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -128,6 +154,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                   _validateForm();
                 },
               ),
+
               const SizedBox(height: 32),
               BlocConsumer<RechargeCubit, RechargeState>(
                 listener: (context, state) {
@@ -154,7 +181,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                       onPressed: () {
                         if (_isFormValid) {
                           if (int.parse(_amountController.text) > 0) {
-                            _processRecharge(null);
+                            _processRecharge();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -171,10 +198,19 @@ class _RechargeScreenState extends State<RechargeScreen> {
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        backgroundColor:
-                            _isFormValid ? Colors.blue : Colors.grey,
+                        backgroundColor: _isFormValid
+                            ? AppColors.buttonColor
+                            : AppColors.accentColor,
                       ),
-                      child: const Text("Recharge"),
+                      child: Text(
+                        "Recharge",
+                        style: _isFormValid
+                            ? Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: Colors.white)
+                            : Theme.of(context).textTheme.labelLarge,
+                      ),
                     ),
                   );
                 },
@@ -182,53 +218,6 @@ class _RechargeScreenState extends State<RechargeScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showPinDialog() {
-    TextEditingController pinController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Enter PIN"),
-        content: TextField(
-          controller: pinController,
-          keyboardType: TextInputType.number,
-          obscureText: true,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              bool validPin = Utils.isPinValid(pinController.text);
-              if (validPin) {
-                _processRecharge(pinController.text);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text("Invalid Pin"),
-                    backgroundColor: Colors.red[400],
-                    duration: const Duration(
-                      seconds: 2,
-                    ),
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-            child: const Text("Proceed"),
-          ),
-        ],
       ),
     );
   }

@@ -21,7 +21,6 @@ class RechargeCubit extends Cubit<RechargeState> {
         super(RechargeInitial(0));
 
   Future<void> rechargeNamaste(
-    String pin,
     int amount,
     String contactNum,
   ) async {
@@ -58,7 +57,6 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   Future<void> rechargeNcell(
-    String pin,
     int amount,
     String contactNum,
   ) async {

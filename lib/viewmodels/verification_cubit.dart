@@ -38,18 +38,16 @@ class VerificationCubit extends Cubit<VerificationState> {
         final message =
             checkMessageAndRespond(response ?? " some error occured. ");
         if (message == DisplayMessage.authenticated) {
-          emit(Verified(pin, userId));
+          emit(Verified(pin, userId, response));
         } else {
           emit(VerificationError(message));
         }
-        dPrint(response);
-        //  else {ho
-        //   emit(
-        //     VerificationError(
-        //       "Phone number you enter suld be in this device",
-        //     ),
-        //   );
-        // }
+        getIt.unregister<AuthenticationProvider>();
+        getIt.registerLazySingleton<AuthenticationProvider>(
+          () => AuthenticationProvider(
+            Verified(pin, userId, response),
+          ),
+        );
       } on PlatformException catch (exception) {
         dPrint(exception.details);
         dPrint(exception.message);
@@ -64,12 +62,6 @@ class VerificationCubit extends Cubit<VerificationState> {
         dPrint(exception);
         emit(VerificationError(DisplayMessage.unexpectedError));
       }
-      getIt.unregister<AuthenticationProvider>();
-      getIt.registerLazySingleton<AuthenticationProvider>(
-        () => AuthenticationProvider(
-          Verified(pin, userId),
-        ),
-      );
     }
   }
 

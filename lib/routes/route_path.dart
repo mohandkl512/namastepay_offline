@@ -11,6 +11,10 @@ class RoutesName {
   static const String moneySent= "/money_sent";
   static const String landlineRecharge= "/landline_recharge";
   static const String landlineSucess= "/landline_sucess";
+  static const String tvSuccess= "/tv_sucess";
+  static const String tvPaymentPage= "/tv_payment";
+
+
 
 
 

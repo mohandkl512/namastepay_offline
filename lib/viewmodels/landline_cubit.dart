@@ -24,6 +24,7 @@ class LandlineCubit extends Cubit<LandlineRechargeState> {
     int amount,
     String contactNum,
   ) async {
+    dPrint(contactNum);
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
     Verified verified = authProvider.authState as Verified;
 

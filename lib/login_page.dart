@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sim_data/sim_data_model.dart';
 import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils.dart';
+import 'package:ussd_npay/utils/custom_toast.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/viewmodels/verification_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/verification_state.dart';
@@ -199,13 +200,19 @@ class _LoginPageState extends State<LoginPage> {
                                                       .currentState
                                                       ?.validate() ??
                                                   false;
-                                              if (validated) {
+                                              if (validated &&
+                                                  selectedSim != null) {
                                                 context
                                                     .read<VerificationCubit>()
                                                     .validateAndSendUSSD(
                                                       selectedSim,
                                                       _pinController.text,
                                                     );
+                                              } else {
+                                                showCustomToast(
+                                                  context,
+                                                  "Choose a sim",
+                                                );
                                               }
                                             },
                                             child: const Text("Login"),

@@ -1,11 +1,63 @@
 class TvData {
+  static const dishTv = "Dish TV";
+  static const simTv = "Sim TV";
+
   static Map<String, String> tvs = {
-    '1': "Dish TV",
-    '2': "Sim TV",
-    '3': "Mero TV",
-    '4': "NT IPTV",
+    '1': dishTv,
+    '2': simTv,
   };
- static Map<String, String> dishTVPaymentOptions = {
+  static Map<String, String> dishTVPaymentOptions = {
+    '1': "400",
+    '2': "500",
+    '3': "600",
+    '4': "700",
+    '5': "1000",
+    '6': "2000",
+    '7': "3000",
+    '8': "4000",
+    '9': "5000",
+    '10': "6000",
+    '11': "7000",
+    '12': "9000",
+    '13': "10000",
+  };
+  static Map<String, String> simTvPaymentOption = {
+    '1': "5",
+    '2': "10",
+    '3': "20",
+    '4': "50",
+    '5': "100",
+    '6': "250",
+    '7': "300",
+    '8': "350",
+    '9': "395",
+    '10': "400",
+    '11': "450",
+    '12': "500",
+    '13': "550",
+    '14': "1000",
+    '15': "2000",
+    '16': "5000",
+    '17': "7000",
+    '18': '9000',
+    '19': '10000'
+  };
+  static Map<String, String> meroTvPaymentOption = {
+    '1': "400",
+    '2': "500",
+    '3': "600",
+    '4': "700",
+    '5': "1000",
+    '6': "2000",
+    '7': "3000",
+    '8': "4000",
+    '9': "5000",
+    '10': "6000",
+    '11': "7000",
+    '12': "9000",
+    '13': "10000",
+  };
+  static Map<String, String> iptvPaymentOption = {
     '1': "400",
     '2': "500",
     '3': "600",

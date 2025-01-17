@@ -23,6 +23,7 @@ class HomeCubit extends Cubit<ServiceState> {
     emit(ServiceLoading());
     try {
       if (authProvider.authState is Verified) {
+        
         Verified verified = authProvider.authState as Verified;
         dPrint("ID: ${verified.subscriptionId}");
         String? response = await UssdAdvanced.sendAdvancedUssd(
@@ -43,6 +44,7 @@ class HomeCubit extends Cubit<ServiceState> {
 
   Future<void> internetPayment(
     String username,
+    String isp
   ) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
 
@@ -51,7 +53,7 @@ class HomeCubit extends Cubit<ServiceState> {
       if (authProvider.authState is Verified) {
         Verified verified = authProvider.authState as Verified;
         String requestMoneycode =
-            ussdMethods.internetPayment(username, verified.pin);
+            ussdMethods.internetPayment(username, verified.pin,isp);
         String? response = await UssdAdvanced.sendAdvancedUssd(
           code: requestMoneycode,
           subscriptionId: verified.subscriptionId,
