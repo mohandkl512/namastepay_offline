@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/app_colors.dart';

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/services/ussd/ussd_methods.dart';
 import 'package:ussd_npay/viewmodels/landline_cubit.dart';
+import 'package:ussd_npay/viewmodels/payments_cubit.dart';
 import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
 import 'package:ussd_npay/viewmodels/request_cubit.dart';
 import 'package:ussd_npay/viewmodels/send_money_cubit.dart';
@@ -42,6 +43,9 @@ void main(List<String> args) {
         ),
         BlocProvider(
           create: (context) => TvCubit(),
+        ),
+        BlocProvider(
+          create: (context) => PaymentsCubit(),
         ),
       ],
       child: ResponsiveSizer(

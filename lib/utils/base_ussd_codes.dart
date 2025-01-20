@@ -1,4 +1,8 @@
 class BaseUssdCodes {
-  // static String baseCodeLive = "500";
-  static String baseUSSDCode = "114";
+  /*
+      500 -> live
+      and 114 -> uat
+   
+   */
+  static String baseUSSDCode = "500";
 }

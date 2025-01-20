@@ -13,6 +13,13 @@ class RoutesName {
   static const String landlineSucess= "/landline_sucess";
   static const String tvSuccess= "/tv_sucess";
   static const String tvPaymentPage= "/tv_payment";
+  static const String neaPaymentPage= "/nea_payment";
+  static const String internetPaymentPage= "/internet_payment";
+  static const String ispListPage= "/isp_list";
+  static const String ispPaymentSucess= "/isp_payment_sucess";
+
+
+
 
 
 

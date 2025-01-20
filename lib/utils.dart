@@ -4,7 +4,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/operators.dart';
-import 'package:ussd_npay/utils/subscription_id.dart';
 
 class Utils {
   static bool isPinValid(String pin) {

@@ -326,6 +326,14 @@ packages:
       url: "https://github.com/saileshbro/ussd_advanced.git"
     source: git
     version: "2.0.0"
+  ussd_launcher:
+    dependency: "direct main"
+    description:
+      name: ussd_launcher
+      sha256: d8eb38e619330a5b48dd25d45db2679ab7a77f418f151a3d6c2a0f35aaa3e145
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.8"
   vector_math:
     dependency: transitive
     description:

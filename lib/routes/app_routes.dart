@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ussd_npay/view/home_page.dart';
 import 'package:ussd_npay/login_page.dart';
+import 'package:ussd_npay/view/internet_payment_page.dart';
+import 'package:ussd_npay/view/isp_listing_page.dart';
 import 'package:ussd_npay/view/landline_recharge_page.dart';
 import 'package:ussd_npay/view/landline_sucess_page.dart';
 import 'package:ussd_npay/view/recharge_screen.dart';
@@ -55,6 +57,16 @@ class AppRoutes {
       case RoutesName.tvPaymentPage:
         return MaterialPageRoute(
             builder: (BuildContext context) => const TvPaymentPage());
+      case RoutesName.internetPaymentPage:
+        return MaterialPageRoute(
+          builder: (BuildContext context) {
+            final args=settings.arguments as Map;
+            return InternetPaymentPage(ispName: args['isp_name']);
+          },
+        );
+      case RoutesName.ispListPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const IspListingPage());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

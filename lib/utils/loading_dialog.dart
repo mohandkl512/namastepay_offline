@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:ussd_npay/utils/app_colors.dart';
+import 'package:ussd_npay/widgets/FadingCube.dart';
 
 void showLoadingDialog(BuildContext context) {
   showDialog(
@@ -7,15 +8,11 @@ void showLoadingDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return Container(
-        height: 80.sp,
-        width: 80.sp,
-        color: Colors.white54,
-        child: Center(
-          child: SizedBox(
-            height: 24.sp,
-            width: 24.sp,
-            child: const CircularProgressIndicator(),
-          ),
+        color: Colors.white.withAlpha(128),
+        height: 100,
+        width: 100,
+        child: const SpinKitFadingCube(
+          color: AppColors.appBarColorBlueBottom,
         ),
       );
     },

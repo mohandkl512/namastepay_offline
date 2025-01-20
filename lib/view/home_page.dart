@@ -2,12 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:ussd_advanced/ussd_advanced.dart';
 import 'package:ussd_npay/main.dart';
 import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/unknown_page.dart';
-import 'package:ussd_npay/utils/custom_toast.dart';
-import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/images.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/utils/npay_texts.dart';
@@ -30,16 +27,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // Initial index of the selected item
-
-  // Function to change the page based on the selected index
+  bool amountVisible = false;
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index; // Update the selected index
     });
   }
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  bool amountVisible = false;
-  // Inject dependency
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -322,9 +320,8 @@ class _HomePageState extends State<HomePage> {
                 MaterialButton(
                   onPressed: () async {
                     // showCustomToast(context, "Service In Progress");
-                    final homeCubit = context.read<HomeCubit>();
-                    await homeCubit.internetPayment("4561",'2');
-              
+                    Navigator.pushNamed(context, RoutesName.ispListPage);
+
                   },
                   child: const UserService(
                     name: "Internet",
@@ -340,6 +337,15 @@ class _HomePageState extends State<HomePage> {
                     name: "TV",
                     icon: Icons.tv,
                     imageUrl: NamastePayIcons.tv,
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                  },
+                  child: const UserService(
+                    name: "Electricity",
+                    icon: Icons.tv,
+                    imageUrl: NamastePayIcons.electricity,
                   ),
                 ),
               ],
