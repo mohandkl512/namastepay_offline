@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/app_colors.dart';
-import 'package:ussd_npay/utils/debug_print.dart';
+import 'package:ussd_npay/utils/isp_data.dart';
 import 'package:ussd_npay/utils/namaste_pay_icons.dart';
 import 'package:ussd_npay/viewmodels/payments_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/payment_state.dart';
@@ -32,15 +32,19 @@ class _NtadslPaymentState extends State<NtadslPayment> {
   void initState() {
     super.initState();
     _phoneController.addListener(() {
-      _landlineError = Utils.isValidLandline(_phoneController.text)
-          ? null
-          : "Not a valid landline number";
+      setState(() {
+        _landlineError = Utils.isValidLandline(_phoneController.text)
+            ? null
+            : "Not a valid landline number";
+      });
       validateBoth();
     });
     _amountController.addListener(() {
-      _amountError = Validator.amountValidator(_amountController.text) == null
-          ? null
-          : "Enter a valid amount";
+      setState(() {
+        _amountError = Validator.amountValidator(_amountController.text) == null
+            ? null
+            : "Enter a valid amount";
+      });
       validateBoth();
     });
   }
@@ -144,7 +148,6 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                     ),
                   ),
                   validator: Validator.amountValidator,
-                  onChanged: (value) {},
                 ),
                 const SizedBox(height: 32),
                 BlocConsumer<PaymentsCubit, PaymentState>(
@@ -152,14 +155,14 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                     if (state is PaymentDone) {
                       Navigator.pushNamedAndRemoveUntil(
                         context,
-                        RoutesName.rechargeComplete,
+                        RoutesName.ispPaymentSucess,
                         (_) => false,
                       );
                     } else if (state is PaymentError) {
                       showErrorDialog(context, "Error Occured", state.message);
                       Navigator.pushNamedAndRemoveUntil(
                         context,
-                        RoutesName.rechargeComplete,
+                        RoutesName.ispPaymentSucess,
                         (_) => false,
                       );
                     } else if (state is PaymentProcessing) {
@@ -171,9 +174,13 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (validated) {
+                            final paymentsCubit = context.read<PaymentsCubit>();
+                            paymentsCubit.makePaymentUAT(_phoneController.text,
+                                IspData.ntadsl, _amountController.text);
+                          } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Text("Enter Valid Amount"),
+                                content: const Text("Validation Error"),
                                 backgroundColor: Colors.red[400],
                                 duration: const Duration(
                                   seconds: 3,
@@ -187,7 +194,7 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                               borderRadius: BorderRadius.circular(10)),
                           backgroundColor: validated
                               ? AppColors.buttonColor
-                              : AppColors.textGreyColor,
+                              : AppColors.lightGreyColor,
                         ),
                         child: Text(
                           "Pay",
@@ -196,7 +203,10 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                                   .textTheme
                                   .labelLarge
                                   ?.copyWith(color: Colors.white)
-                              : Theme.of(context).textTheme.labelLarge,
+                              : Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  ?.copyWith(color: Colors.black.withAlpha(80)),
                         ),
                       ),
                     );

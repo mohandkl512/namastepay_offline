@@ -18,17 +18,28 @@ class PaymentsCubit extends Cubit<PaymentState> {
       : ussdMethods = getIt<UssdMethods>(),
         super(PaymentInitial(0));
 
-  Future<void> makePayment(int ispId) async {
+  Future<void> makePaymentUAT(String landline, int ispId, String amount) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
     emit(PaymentProcessing());
     try {
       if (authProvider.authState is Verified) {
         Verified verified = authProvider.authState as Verified;
+        String code = ussdMethods.ntInternetPayment(
+            landline, verified.pin, ispId, int.parse(amount));
+        dPrint(code);
         String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: ussdMethods.checkBalance(verified.pin),
+          code: code,
           subscriptionId: verified.subscriptionId,
         );
-        emit(PaymentDone(ispId, response));
+        dPrint(response);
+        if (response?.toLowerCase().contains(
+                "Amount should be greater Than or equal to  100"
+                    .toLowerCase()) ??
+            false) {
+          emit(PaymentError(response ?? "Null"));
+        } else {
+          emit(PaymentDone(ispId, response));
+        }
       } else {
         emit(PaymentError(DisplayMessage.unexpectedError));
       }

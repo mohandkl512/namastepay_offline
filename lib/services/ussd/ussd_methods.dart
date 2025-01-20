@@ -65,9 +65,22 @@ class UssdMethods {
   ) {
     // final user=encodeUsernameCustom(username);
 
-    dPrint("*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*$username*1*$pin#");
+    dPrint(
+        "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*$username*1*$pin#");
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*$username*1*$pin#";
   }
+
+  String ntInternetPayment(
+    String landlineNumber,
+    String pin,
+    int ussdOption,
+    int amount,
+  ) {
+    dPrint(
+        "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$ussdOption*$landlineNumber*$amount*$pin#");
+    return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$ussdOption*$landlineNumber*$amount*$pin#";
+  }
+
   // String neaPayment(String scNo,String userId,String officeCode,String pin ){
   //    dPrint("*${BaseUssdCodes.baseUSSDCode}*$pin*6*3*1*1*$internetOption*$username*1*$pin#");
   //   return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*${username.trim()}*1*$pin#";
@@ -84,19 +97,16 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*2*$tvOption*$customerId*$paymentOption*$pin#";
   }
 }
+
 String encodeUsernameCustom(String username) {
   String alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  return username
-      .toUpperCase()
-      .split('')
-      .map((char) {
-        if (char == '_') {
-          return '27'; // Encoding the underscore as '27'
-        }
-        int index = alphabet.indexOf(char);
-        return index != -1 ? (index + 1).toString() : '';  // A=1, B=2, ..., Z=26
-      })
-      .join('');
+  return username.toUpperCase().split('').map((char) {
+    if (char == '_') {
+      return '27'; // Encoding the underscore as '27'
+    }
+    int index = alphabet.indexOf(char);
+    return index != -1 ? (index + 1).toString() : ''; // A=1, B=2, ..., Z=26
+  }).join('');
 }
 
 // void main() {

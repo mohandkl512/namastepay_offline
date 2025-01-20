@@ -3,6 +3,7 @@ import 'package:ussd_npay/view/home_page.dart';
 import 'package:ussd_npay/login_page.dart';
 import 'package:ussd_npay/view/internet_payment_page.dart';
 import 'package:ussd_npay/view/isp_listing_page.dart';
+import 'package:ussd_npay/view/isps/payment_sucess.dart';
 import 'package:ussd_npay/view/landline_recharge_page.dart';
 import 'package:ussd_npay/view/landline_sucess_page.dart';
 import 'package:ussd_npay/view/recharge_screen.dart';
@@ -49,8 +50,7 @@ class AppRoutes {
             builder: (BuildContext context) => const LandlineRechargePage());
       case RoutesName.landlineSucess:
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                const LandlineSucessPage()); // if none of these above cases are met then return this
+            builder: (BuildContext context) => const LandlineSucessPage());
       case RoutesName.tvSuccess:
         return MaterialPageRoute(
             builder: (BuildContext context) => const TvSucessPage());
@@ -60,13 +60,16 @@ class AppRoutes {
       case RoutesName.internetPaymentPage:
         return MaterialPageRoute(
           builder: (BuildContext context) {
-            final args=settings.arguments as Map;
+            final args = settings.arguments as Map;
             return InternetPaymentPage(ispName: args['isp_name']);
           },
         );
       case RoutesName.ispListPage:
         return MaterialPageRoute(
             builder: (BuildContext context) => const IspListingPage());
+      case RoutesName.ispPaymentSucess:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const IspPaymentSucess());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(
