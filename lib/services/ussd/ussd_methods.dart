@@ -70,6 +70,14 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*$username*1*$pin#";
   }
 
+  String statements(
+    String pin,
+  ) {
+    // final user=encodeUsernameCustom(username);
+    dPrint("*${BaseUssdCodes.baseUSSDCode}*$pin*1*3#");
+    return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*3#";
+  }
+
   String ntInternetPayment(
     String landlineNumber,
     String pin,

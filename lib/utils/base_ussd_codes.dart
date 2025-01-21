@@ -4,5 +4,6 @@ class BaseUssdCodes {
       and 114 -> uat
    
    */
-  static String baseUSSDCode = "114";
+  static String baseUSSDCode = "500";
+  
 }
