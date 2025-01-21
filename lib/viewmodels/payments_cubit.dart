@@ -50,4 +50,36 @@ class PaymentsCubit extends Cubit<PaymentState> {
       emit(PaymentError(ErrorMessage.unexpectedError));
     }
   }
+    Future<void> makePaymentLive(String landline, int ispId, String amount) async {
+    final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
+    emit(PaymentProcessing());
+    try {
+      if (authProvider.authState is Verified) {
+        Verified verified = authProvider.authState as Verified;
+        String code = ussdMethods.ntInternetPayment(
+            landline, verified.pin, ispId, int.parse(amount));
+        dPrint(code);
+        String? response = await UssdAdvanced.sendAdvancedUssd(
+          code: code,
+          subscriptionId: verified.subscriptionId,
+        );
+        dPrint(response);
+        if (response?.toLowerCase().contains(
+                "Amount should be greater Than or equal to  100"
+                    .toLowerCase()) ??
+            false) {
+          emit(PaymentError(response ?? "Null"));
+        } else {
+          emit(PaymentDone(ispId, response));
+        }
+      } else {
+        emit(PaymentError(DisplayMessage.unexpectedError));
+      }
+    } on PlatformException catch (exception) {
+      dPrint(exception.details);
+      dPrint(exception.message);
+      dPrint(exception.code);
+      emit(PaymentError(ErrorMessage.unexpectedError));
+    }
+  }
 }

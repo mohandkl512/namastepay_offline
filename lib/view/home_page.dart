@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/main.dart';
 import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/unknown_page.dart';
+import 'package:ussd_npay/utils/custom_toast.dart';
 import 'package:ussd_npay/utils/images.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/utils/npay_texts.dart';
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index; // Update the selected index
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -321,7 +323,6 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () async {
                     // showCustomToast(context, "Service In Progress");
                     Navigator.pushNamed(context, RoutesName.ispListPage);
-
                   },
                   child: const UserService(
                     name: "Internet",
@@ -341,6 +342,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 MaterialButton(
                   onPressed: () {
+                    showCustomToast(context, "feature in progress");
                   },
                   child: const UserService(
                     name: "Electricity",

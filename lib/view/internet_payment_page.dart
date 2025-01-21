@@ -21,11 +21,10 @@ class InternetPaymentPage extends StatelessWidget {
 
   String getName(int id) {
     switch (id) {
-      case IspData.ntadsl:
+      case IspData.ntadslLive:
         return "NT ADSL";
-      case IspData.ntffth:
+      case IspData.ntffthLive:
         return "NT FTTH";
-
       default:
         return "Not Available";
     }
@@ -33,9 +32,9 @@ class InternetPaymentPage extends StatelessWidget {
 
   _buildIspPage(int id) {
     switch (id) {
-      case IspData.ntadsl:
+      case IspData.ntadslLive:
         return const NtadslPayment(title: "NT ADSL");
-      case IspData.ntffth:
+      case IspData.ntffthLive:
         return const NtftthPayment(title: "NT FTTH");
       default:
         return const SizedBox();

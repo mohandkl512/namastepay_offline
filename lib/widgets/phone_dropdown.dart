@@ -33,7 +33,7 @@ class PhoneDropdown extends StatelessWidget {
             return DropdownMenuItem(
               value: simDataModel,
               child: simDataModel.phoneNumber.isEmpty
-                  ? Text("Sim: ${simDataModel.simSlotIndex}")
+                  ? Text("Sim: ${simDataModel.simSlotIndex + 1}")
                   : Text(simDataModel.phoneNumber),
             );
           }).toList(),

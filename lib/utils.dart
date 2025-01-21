@@ -34,6 +34,16 @@ class Utils {
     return false;
   }
 
+  static bool isvalidFtth(String? number) {
+    if (number != null && number.length > 8) {
+      dPrint("valid phone number");
+      return true;
+    } else {
+      dPrint("Validation Error: FTTH");
+    }
+    return false;
+  }
+
   static Future<int> getSubscriptionId(String phoneNumber) async {
     // bool permissionsGranted = await requestPermissions();
     // int subscriptionId = SubscriptionID.auto;

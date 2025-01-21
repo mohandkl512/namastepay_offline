@@ -29,6 +29,7 @@ class HomeCubit extends Cubit<ServiceState> {
           code: ussdMethods.checkBalance(verified.pin),
           subscriptionId: verified.subscriptionId,
         );
+        verified.sucessMessage = response;
         emit(ServiceSelected(response));
       } else {
         emit(ServiceError(DisplayMessage.unexpectedError));

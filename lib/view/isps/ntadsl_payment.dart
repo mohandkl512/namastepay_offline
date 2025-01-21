@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -173,6 +174,7 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                     return Center(
                       child: ElevatedButton(
                         onPressed: () {
+                          if(kReleaseMode){
                           if (validated) {
                             final paymentsCubit = context.read<PaymentsCubit>();
                             paymentsCubit.makePaymentUAT(_phoneController.text,
@@ -181,6 +183,18 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text("Validation Error"),
+                                backgroundColor: Colors.red[400],
+                                duration: const Duration(
+                                  seconds: 3,
+                                ),
+                              ),
+                            );
+                          }
+
+                          }else{
+                             ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text("Only Available on Live"),
                                 backgroundColor: Colors.red[400],
                                 duration: const Duration(
                                   seconds: 3,

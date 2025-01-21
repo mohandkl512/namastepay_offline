@@ -33,7 +33,7 @@ class IspListingPage extends StatelessWidget {
               onSelected: () {
                 Navigator.pushNamed(context, RoutesName.internetPaymentPage,
                     arguments: {
-                      'isp_name': '${IspData.ntadsl}',
+                      'isp_name': '${IspData.ntadslLive}',
                     });
               },
             ),
@@ -43,7 +43,7 @@ class IspListingPage extends StatelessWidget {
               onSelected: () {
                 Navigator.pushNamed(context, RoutesName.internetPaymentPage,
                     arguments: {
-                      'isp_name': '${IspData.ntffth}',
+                      'isp_name': '${IspData.ntffthLive}',
                     });
               },
             ),
