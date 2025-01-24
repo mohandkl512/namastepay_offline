@@ -1,7 +1,7 @@
 import 'package:ussd_npay/utils/error_message.dart';
 
 class AuthErrorMessage extends ErrorMessage {
-  //TODO: Warning Please do not remove the message commented at the top of variable as this is the only way we can verify the ussd message
+  //TODO: Warning Please do not remove the message commented at the top of variable as this is the only way we can verify the ussd error message
 
   static const String userNotRegistered =
       "You need to be a registered user to access this offline namastepay feature. ";
@@ -17,4 +17,7 @@ class AuthErrorMessage extends ErrorMessage {
   static const String servicesCurrentlyNotAvailable =
       "Services are currently unavailable";
   static const String registrationFlowActive = "Invalid Option Selected";
+  static const String samePassword =
+      "The new authentication value should not be same as old authentication value";
+  static const String invalidPin = "Invalid Pin";
 }

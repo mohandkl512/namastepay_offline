@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/services/ussd/ussd_methods.dart';
+import 'package:ussd_npay/viewmodels/cashout_cubit.dart';
+import 'package:ussd_npay/viewmodels/internal_remit_cubit.dart';
 import 'package:ussd_npay/viewmodels/landline_cubit.dart';
 import 'package:ussd_npay/viewmodels/payments_cubit.dart';
+import 'package:ussd_npay/viewmodels/profile_cubit.dart';
 import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
 import 'package:ussd_npay/viewmodels/request_cubit.dart';
 import 'package:ussd_npay/viewmodels/send_money_cubit.dart';
@@ -46,6 +49,15 @@ void main(List<String> args) {
         ),
         BlocProvider(
           create: (context) => PaymentsCubit(),
+        ),
+          BlocProvider(
+          create: (context) => ProfileCubit(),
+        ),
+          BlocProvider(
+          create: (context) => CashoutCubit(),
+        ),
+         BlocProvider(
+          create: (context) => InternalRemitCubit(),
         ),
       ],
       child: ResponsiveSizer(

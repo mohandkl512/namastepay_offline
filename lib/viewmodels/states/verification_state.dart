@@ -6,7 +6,8 @@ class Verified extends VerificationState {
   String pin;
   int subscriptionId;
   String? sucessMessage;
-  Verified(this.pin,this.subscriptionId,this.sucessMessage);
+  String? referralCode;
+  Verified(this.pin,this.subscriptionId,this.sucessMessage,this.referralCode);
 }
 
 class Verifying extends VerificationState {}

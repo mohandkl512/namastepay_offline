@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ussd_npay/routes/route_path.dart';
-import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/app_colors.dart';
+import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/utils/npay_texts.dart';
-import 'package:ussd_npay/utils/operators.dart';
-import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
-import 'package:ussd_npay/viewmodels/states/recharge_state.dart';
+import 'package:ussd_npay/viewmodels/cashout_cubit.dart';
+import 'package:ussd_npay/viewmodels/states/cashout_state.dart';
 import '../utils/error_dialog.dart';
 
-class RechargeScreen extends StatefulWidget {
-  const RechargeScreen({super.key});
+class CashoutPage extends StatefulWidget {
+  const CashoutPage({super.key});
 
   @override
-  _RechargeScreenState createState() => _RechargeScreenState();
+  _CashoutPageState createState() => _CashoutPageState();
 }
 
-class _RechargeScreenState extends State<RechargeScreen> {
+class _CashoutPageState extends State<CashoutPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? _selectedOperator;
   bool _isFormValid = false;
 
-  // List of available network operators
-  final List<String> operators = [MNO.nt, MNO.ncell];
-  
+
   @override
   void initState() {
     super.initState();
@@ -40,32 +36,15 @@ class _RechargeScreenState extends State<RechargeScreen> {
     setState(() {
       _isFormValid =
           Validator.validatePhoneNumber(_phoneController.text) == null &&
-              _selectedOperator != null &&
               Validator.amountValidator(_amountController.text) == null;
     });
   }
 
-  void _processRecharge() async {
+  void _processCashout() async {
     if (mounted) {
-      final homeCubit = context.read<RechargeCubit>();
-      if (Utils.checkNumberPrefix(_phoneController.text) == MNO.nt) {
-        await homeCubit.rechargeNamaste(
-            int.parse(_amountController.text), _phoneController.text);
-      } else if (_selectedOperator == MNO.ncell) {
-        await homeCubit.rechargeNcell(
-            int.parse(_amountController.text), _phoneController.text);
-      }
-    } else {
-      if (mounted) {
-        final homeCubit = context.read<RechargeCubit>();
-        if (Utils.checkNumberPrefix(_phoneController.text) == MNO.nt) {
-          await homeCubit.rechargeNamaste(
-              int.parse(_amountController.text), _phoneController.text);
-        } else if (_selectedOperator == MNO.ncell) {
-          await homeCubit.rechargeNcell(
-              int.parse(_amountController.text), _phoneController.text);
-        }
-      }
+      final cashoutCubit = context.read<CashoutCubit>();
+      await cashoutCubit.processCashout(
+          _phoneController.text, int.parse(_amountController.text));
     }
   }
 
@@ -74,7 +53,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Mobile Topup",
+          "Cash Out",
           style: Theme.of(context).textTheme.labelLarge,
         ),
       ),
@@ -92,43 +71,20 @@ class _RechargeScreenState extends State<RechargeScreen> {
                 maxLength: 10,
                 validator: Validator.validatePhoneNumber,
                 onChanged: (value) {
-                  if (value.length == 10) {
-                    setState(() {
-                      _selectedOperator = Utils.checkNumberPrefix(value);
-                    });
-                  }
                   _formKey.currentState?.validate();
                 },
                 decoration: InputDecoration(
-                  labelText: "Phone Number",
+                  labelText: "Agent Phone Number",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
-
-              _selectedOperator == null && _phoneController.text.length < 10
-                  ? const SizedBox()
-                  : ChoiceChip(
-                      label: Text(
-                        _selectedOperator!,
-                        style:  TextStyle(
-                            color: _selectedOperator == MNO.nt
-                                ? AppColors.buttonColor
-                                : Colors.deepPurpleAccent,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      selected: true,
-                      selectedColor: Colors.white,
-                    ),
-
-              const SizedBox(height: 8),
-
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Amount',
+                  labelText: 'Amount: Minimum Rs.100',
                   prefixIcon: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8.0,
@@ -151,38 +107,39 @@ class _RechargeScreenState extends State<RechargeScreen> {
                   _validateForm();
                 },
               ),
-
               const SizedBox(height: 32),
-              BlocConsumer<RechargeCubit, RechargeState>(
+              BlocConsumer<CashoutCubit, CashoutState>(
                 listener: (context, state) {
-                  if (state is RechargeSelected) {
+                  dPrint("Current State: $state");
+                  if (state is CashoutDone) {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      RoutesName.rechargeComplete,
+                      RoutesName.cashoutSuccess,
                       (_) => false,
                     );
-                  } else if (state is RechargeError) {
+                  } else if (state is CashoutError) {
                     showErrorDialog(context, "Error Occured", state.message);
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      RoutesName.rechargeComplete,
+                      RoutesName.cashoutSuccess,
                       (_) => false,
                     );
-                  } else if (state is Recharging) {
+                  } else if (state is CashoutProcessing) {
                     showLoadingDialog(context);
                   }
                 },
-                builder: (BuildContext context, RechargeState state) {
+                builder: (BuildContext context, CashoutState state) {
                   return Center(
                     child: ElevatedButton(
                       onPressed: () {
                         if (_isFormValid) {
-                          if (int.parse(_amountController.text) > 0) {
-                            _processRecharge();
+                          if (int.parse(_amountController.text) >= 100) {
+                            _processCashout();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Text("Enter Valid Amount"),
+                                content:
+                                    const Text("Enter amount more than 90"),
                                 backgroundColor: Colors.red[400],
                                 duration: const Duration(
                                   seconds: 3,
@@ -200,7 +157,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                             : AppColors.accentColor,
                       ),
                       child: Text(
-                        "Recharge",
+                        "Proceed to Cashout",
                         style: _isFormValid
                             ? Theme.of(context)
                                 .textTheme

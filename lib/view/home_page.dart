@@ -5,11 +5,13 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:ussd_npay/main.dart';
 import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/unknown_page.dart';
+import 'package:ussd_npay/utils/app_colors.dart';
 import 'package:ussd_npay/utils/custom_toast.dart';
 import 'package:ussd_npay/utils/images.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/utils/npay_texts.dart';
 import 'package:ussd_npay/viewmodels/home_cubit.dart';
+import 'package:ussd_npay/viewmodels/profile_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/home_state.dart';
 import 'package:ussd_npay/viewmodels/states/verification_state.dart';
 import 'package:ussd_npay/widgets/user_service.dart';
@@ -42,80 +44,83 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+    return BlocProvider(
+      create: (context) => ProfileCubit(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        drawer: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: AppColors.appBarColorBlueTop,
+                ),
+                child: Text(
+                  'NamastePay',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-              child: Text(
-                'NamastePay',
-                style: TextStyle(color: Colors.white),
+              ListTile(
+                title: const Text('About Us'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
+              ListTile(
+                title: const Text('Privacy Policy'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped, // Set the onTap function to update the index
+
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            ListTile(
-              title: const Text('About Us'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Privacy Policy'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+        
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle),
+              label: 'Profile',
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped, // Set the onTap function to update the index
-
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Image.asset(
+            namastePayLogo,
+            height: 8.h,
+            width: 48.w,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Statements',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profile',
-          ),
-        ],
-      ),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Image.asset(
-          namastePayLogo,
-          height: 8.h,
-          width: 48.w,
+          actions: [
+            IconButton.outlined(
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RoutesName.login,
+                  (_) => false,
+                );
+              },
+              icon: Icon(
+                Icons.logout_outlined,
+                size: 4.w,
+              ),
+            )
+          ],
         ),
-        actions: [
-          IconButton.outlined(
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, RoutesName.login, (_) => false);
-            },
-            icon: Icon(
-              Icons.logout_outlined,
-              size: 4.w,
-            ),
-          )
-        ],
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
@@ -346,8 +351,28 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: const UserService(
                     name: "Electricity",
-                    icon: Icons.tv,
+                    icon: Icons.e_mobiledata,
                     imageUrl: NamastePayIcons.electricity,
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, RoutesName.cashoutPage);
+                  },
+                  child: const UserService(
+                    name: "Cash Out",
+                    icon: Icons.money_outlined,
+                    imageUrl: NamastePayIcons.cashout,
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, RoutesName.internalRemit);
+                  },
+                  child: const UserService(
+                    name: "Internal Remit",
+                    icon: Icons.money_outlined,
+                    imageUrl: NamastePayIcons.remittance,
                   ),
                 ),
               ],
@@ -356,8 +381,6 @@ class _HomePageState extends State<HomePage> {
         );
 
       case 1:
-        return const StatementsPage();
-      case 2:
         return const ProfilePage();
       default:
         return const UnknownPage();

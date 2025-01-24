@@ -36,14 +36,14 @@ class VerificationCubit extends Cubit<VerificationState> {
         final message =
             checkMessageAndRespond(response ?? " some error occured. ");
         if (message == DisplayMessage.authenticated) {
-          emit(Verified(pin, userId, response));
+          emit(Verified(pin, userId, response,null));
         } else {
           emit(VerificationError(message));
         }
         getIt.unregister<AuthenticationProvider>();
         getIt.registerLazySingleton<AuthenticationProvider>(
           () => AuthenticationProvider(
-            Verified(pin, userId, response),
+            Verified(pin, userId, response,null),
           ),
         );
       } on PlatformException catch (exception) {

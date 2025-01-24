@@ -177,4 +177,22 @@ class Utils {
 
     return false; // Number does not match any area code
   }
+
+  static String getCode(String text) {
+
+    // Regular expression to match the referral code
+    RegExp regExp = RegExp(r'(?<=Your Referral Code is :\s)(\w+)');
+
+    // Find the match
+    Match? match = regExp.firstMatch(text);
+
+    if (match != null) {
+      String referralCode = match.group(0)!; // Extract the referral code
+      dPrint('Referral Code: $referralCode');
+      return referralCode;
+    } else {
+      dPrint('No referral code found');
+      return 'Could not retreive';
+    }
+  }
 }

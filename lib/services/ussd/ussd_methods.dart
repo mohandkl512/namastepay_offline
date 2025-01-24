@@ -11,6 +11,22 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*2#";
   }
 
+  String getReferral(String pin) {
+    /* 
+    1-> For Account and
+    2 -> 7 for referall code from account
+     */
+    return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*7#";
+  }
+
+  String changePin(String pin, String newPin) {
+    /* 
+    1-> For Account and
+    2 -> 6 for change pin
+     */
+    return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*6*$newPin*$newPin#";
+  }
+
   String rechargeNTC(
     String phoneNumberToRecharge,
     String pin,
@@ -78,6 +94,17 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*3#";
   }
 
+  String cashout(String pin, String agentNumber, int amount) {
+    // final user=encodeUsernameCustom(username);
+    dPrint(
+        "*${BaseUssdCodes.baseUSSDCode}*$pin*5*3*$agentNumber*$amount*$pin#");
+    return "*${BaseUssdCodes.baseUSSDCode}*$pin*5*3*$agentNumber*$amount*$pin#";
+  }
+
+  String internalRemit(String pin, String receiverNumber, int amount) {
+    return "*${BaseUssdCodes.baseUSSDCode}*$pin*5*4*$receiverNumber*$amount*$pin#";
+  }
+
   String ntInternetPayment(
     String landlineNumber,
     String pin,
@@ -116,10 +143,3 @@ String encodeUsernameCustom(String username) {
     return index != -1 ? (index + 1).toString() : ''; // A=1, B=2, ..., Z=26
   }).join('');
 }
-
-// void main() {
-//   String username = 'John_Doe';
-//   String encodedUsername = encodeUsernameCustom(username);
-
-//   print('Encoded Username (Custom): $encodedUsername');
-// }

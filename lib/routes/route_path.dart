@@ -17,6 +17,16 @@ class RoutesName {
   static const String internetPaymentPage= "/internet_payment";
   static const String ispListPage= "/isp_list";
   static const String ispPaymentSucess= "/isp_payment_sucess";
+  static const String changePinPage= "/change_pin";
+  static const String cashoutPage= "/cashout";
+  static const String cashoutSuccess= "/cashout_success";
+  static const String internalRemit= "/internal_remit";
+  static const String remitSucess= "/remit_success";
+
+
+
+
+
 
 
 

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:ussd_npay/view/cashout_page.dart';
+import 'package:ussd_npay/view/cashout_sucess.dart';
+import 'package:ussd_npay/view/change_pin_page.dart';
 import 'package:ussd_npay/view/home_page.dart';
 import 'package:ussd_npay/login_page.dart';
+import 'package:ussd_npay/view/internal_remit.dart';
 import 'package:ussd_npay/view/internet_payment_page.dart';
 import 'package:ussd_npay/view/isp_listing_page.dart';
 import 'package:ussd_npay/view/isps/payment_sucess.dart';
 import 'package:ussd_npay/view/landline_recharge_page.dart';
 import 'package:ussd_npay/view/landline_sucess_page.dart';
 import 'package:ussd_npay/view/recharge_screen.dart';
+import 'package:ussd_npay/view/remit_sucess.dart';
 import 'package:ussd_npay/view/request_sucess.dart';
 import 'package:ussd_npay/view/send_money_page.dart';
 import 'package:ussd_npay/view/recharge_sucess_screen.dart';
@@ -70,6 +75,21 @@ class AppRoutes {
       case RoutesName.ispPaymentSucess:
         return MaterialPageRoute(
             builder: (BuildContext context) => const IspPaymentSucess());
+      case RoutesName.changePinPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const ChangePinPage());
+      case RoutesName.cashoutPage:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const CashoutPage());
+      case RoutesName.cashoutSuccess:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const CashoutSucess());
+     case RoutesName.internalRemit:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const InternalRemit());
+             case RoutesName.remitSucess:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const RemitSuccess());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(
