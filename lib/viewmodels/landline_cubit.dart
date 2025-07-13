@@ -14,11 +14,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class LandlineCubit extends Cubit<LandlineRechargeState> {
-  late UssdMethods ussdMethods;
-
-  LandlineCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(LandlineRechargeInitial(0));
+  LandlineCubit() : super(LandlineRechargeInitial(0));
 
   Future<void> payBill(
     int amount,
@@ -34,7 +30,7 @@ class LandlineCubit extends Cubit<LandlineRechargeState> {
       emit(LandlineRecharging());
       try {
         if (authProvider.authState is Verified) {
-          String landlineRechargeCode = ussdMethods.landlineRecharge(
+          String landlineRechargeCode = UssdMethods.landlineRecharge(
               contactNum, verified.pin, amount.toString());
           String? response = await UssdAdvanced.sendAdvancedUssd(
             code: landlineRechargeCode,

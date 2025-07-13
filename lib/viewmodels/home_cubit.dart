@@ -12,11 +12,7 @@ import 'states/home_state.dart';
 import 'states/verification_state.dart';
 
 class HomeCubit extends Cubit<ServiceState> {
-  late UssdMethods ussdMethods;
-
-  HomeCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(ServiceInitial());
+  HomeCubit() : super(ServiceInitial());
 
   Future<void> checkBalance() async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
@@ -26,7 +22,7 @@ class HomeCubit extends Cubit<ServiceState> {
         Verified verified = authProvider.authState as Verified;
         dPrint("ID: ${verified.subscriptionId}");
         String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: ussdMethods.checkBalance(verified.pin),
+          code: UssdMethods.checkBalance(verified.pin),
           subscriptionId: verified.subscriptionId,
         );
         verified.sucessMessage = response;
@@ -49,7 +45,7 @@ class HomeCubit extends Cubit<ServiceState> {
     try {
       if (authProvider.authState is Verified) {
         String requestMoneycode =
-            ussdMethods.internetPayment(username, verified.pin, isp);
+            UssdMethods.internetPayment(username, verified.pin, isp);
         String? response = await UssdAdvanced.sendAdvancedUssd(
           code: requestMoneycode,
           subscriptionId: verified.subscriptionId,
@@ -73,7 +69,6 @@ class HomeCubit extends Cubit<ServiceState> {
 
   Future<void> neaPayment(String username, String isp) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
-    Verified verified = authProvider.authState as Verified;
 
     // String _response = "empty";
     // String? _res = await UssdAdvanced.multisessionUssd(
@@ -93,7 +88,7 @@ class HomeCubit extends Cubit<ServiceState> {
       if (authProvider.authState is Verified) {
         Verified verified = authProvider.authState as Verified;
         String requestMoneycode =
-            ussdMethods.internetPayment(username, verified.pin, isp);
+            UssdMethods.internetPayment(username, verified.pin, isp);
         String? response = await UssdAdvanced.sendAdvancedUssd(
           code: requestMoneycode,
           subscriptionId: verified.subscriptionId,

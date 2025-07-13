@@ -12,11 +12,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class InternalRemitCubit extends Cubit<InternalRemitState> {
-  late UssdMethods ussdMethods;
-
-  InternalRemitCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(InternalRemitInitial());
+  InternalRemitCubit() : super(InternalRemitInitial());
 
   Future<void> processInternalRemit(String receiverNumber, int amount) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
@@ -26,7 +22,7 @@ class InternalRemitCubit extends Cubit<InternalRemitState> {
         Verified verified = authProvider.authState as Verified;
         dPrint("ID: ${verified.subscriptionId}");
         String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: ussdMethods.internalRemit(verified.pin, receiverNumber, amount),
+          code: UssdMethods.internalRemit(verified.pin, receiverNumber, amount),
           subscriptionId: verified.subscriptionId,
         );
         dPrint("Response: $response");

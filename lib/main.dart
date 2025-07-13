@@ -81,5 +81,4 @@ void main(List<String> args) {
 void setup() {
   getIt.registerSingleton<AuthenticationProvider>(
       AuthenticationProvider(VerificationInitial()));
-  getIt.registerSingleton<UssdMethods>(UssdMethods());
 }

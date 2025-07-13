@@ -12,11 +12,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class CashoutCubit extends Cubit<CashoutState> {
-  late UssdMethods ussdMethods;
-
-  CashoutCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(CashoutInitial(0));
+  CashoutCubit() : super(CashoutInitial(0));
 
   Future<void> processCashout(String agentNumber, int amount) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
@@ -26,7 +22,7 @@ class CashoutCubit extends Cubit<CashoutState> {
         Verified verified = authProvider.authState as Verified;
         dPrint("ID: ${verified.subscriptionId}");
         String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: ussdMethods.cashout(verified.pin, agentNumber, amount),
+          code: UssdMethods.cashout(verified.pin, agentNumber, amount),
           subscriptionId: verified.subscriptionId,
         );
         dPrint("Response: $response");

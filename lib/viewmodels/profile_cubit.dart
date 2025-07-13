@@ -12,11 +12,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  late UssdMethods ussdMethods;
-
-  ProfileCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(ProfileInitial());
+  ProfileCubit() : super(ProfileInitial());
 
   Future<void> getReferralCode() async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
@@ -28,7 +24,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         try {
           dPrint("ID: ${verified.subscriptionId}");
           String? response = await UssdAdvanced.sendAdvancedUssd(
-            code: ussdMethods.getReferral(verified.pin),
+            code: UssdMethods.getReferral(verified.pin),
             subscriptionId: verified.subscriptionId,
           );
           verified.sucessMessage = response;
@@ -56,7 +52,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         Verified verified = authProvider.authState as Verified;
         dPrint("ID: ${verified.subscriptionId}");
         String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: ussdMethods.changePin(verified.pin, newPin),
+          code: UssdMethods.changePin(verified.pin, newPin),
           subscriptionId: verified.subscriptionId,
         );
         dPrint(response);

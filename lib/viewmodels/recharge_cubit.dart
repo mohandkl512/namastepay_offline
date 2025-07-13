@@ -14,11 +14,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class RechargeCubit extends Cubit<RechargeState> {
-  late UssdMethods ussdMethods;
-
-  RechargeCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(RechargeInitial(0));
+  RechargeCubit() : super(RechargeInitial(0));
 
   Future<void> rechargeNamaste(
     int amount,
@@ -34,7 +30,7 @@ class RechargeCubit extends Cubit<RechargeState> {
         if (authProvider.authState is Verified) {
           Verified verified = authProvider.authState as Verified;
           String rechargeCode =
-              ussdMethods.rechargeNTC(contactNum, verified.pin, amount.toString());
+              UssdMethods.rechargeNTC(contactNum, verified.pin, amount.toString());
           dPrint("Recharge Code: $rechargeCode");
           String? response = await UssdAdvanced.sendAdvancedUssd(
             code: rechargeCode,
@@ -69,7 +65,7 @@ class RechargeCubit extends Cubit<RechargeState> {
         if (authProvider.authState is Verified) {
           Verified verified = authProvider.authState as Verified;
           String rechargeCode =
-              ussdMethods.rechargeNcell(contactNum, verified.pin, amount.toString());
+              UssdMethods.rechargeNcell(contactNum, verified.pin, amount.toString());
           String? response = await UssdAdvanced.sendAdvancedUssd(
             code: rechargeCode,
             subscriptionId: verified.subscriptionId,

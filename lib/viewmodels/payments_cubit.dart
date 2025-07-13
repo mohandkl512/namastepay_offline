@@ -12,11 +12,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class PaymentsCubit extends Cubit<PaymentState> {
-  late UssdMethods ussdMethods;
-
-  PaymentsCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(PaymentInitial(0));
+  PaymentsCubit() : super(PaymentInitial(0));
 
   Future<void> makePaymentUAT(String landline, int ispId, String amount) async {
     final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
@@ -24,7 +20,7 @@ class PaymentsCubit extends Cubit<PaymentState> {
     try {
       if (authProvider.authState is Verified) {
         Verified verified = authProvider.authState as Verified;
-        String code = ussdMethods.ntInternetPayment(
+        String code = UssdMethods.ntInternetPayment(
             landline, verified.pin, ispId, int.parse(amount));
         dPrint(code);
         String? response = await UssdAdvanced.sendAdvancedUssd(
@@ -56,7 +52,7 @@ class PaymentsCubit extends Cubit<PaymentState> {
     try {
       if (authProvider.authState is Verified) {
         Verified verified = authProvider.authState as Verified;
-        String code = ussdMethods.ntInternetPayment(
+        String code = UssdMethods.ntInternetPayment(
             landline, verified.pin, ispId, int.parse(amount));
         dPrint(code);
         String? response = await UssdAdvanced.sendAdvancedUssd(

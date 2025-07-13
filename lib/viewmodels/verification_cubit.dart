@@ -14,11 +14,7 @@ import '../utils/errors/auth_error_message.dart';
 import '../utils/response_message.dart';
 
 class VerificationCubit extends Cubit<VerificationState> {
-  late UssdMethods ussdMethods;
-
-  VerificationCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(VerificationInitial());
+  VerificationCubit() : super(VerificationInitial());
 
   Future<void> validateAndSendUSSD(SimDataModel? sim, String pin) async {
     dPrint("validating user");
@@ -30,7 +26,7 @@ class VerificationCubit extends Cubit<VerificationState> {
       final userId = sim?.subscriptionId ?? -1;
       try {
         String? response = await UssdAdvanced.sendAdvancedUssd(
-          code: ussdMethods.verificationCode(pin),
+          code: UssdMethods.verificationCode(pin),
           subscriptionId: userId,
         );
         final message =

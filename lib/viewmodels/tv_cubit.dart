@@ -12,11 +12,7 @@ import '../utils/debug_print.dart';
 import 'states/verification_state.dart';
 
 class TvCubit extends Cubit<TvState> {
-  late UssdMethods ussdMethods;
-
-  TvCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(TvInitial(amount: 0));
+  TvCubit() : super(TvInitial(amount: 0));
 
   Future<void> makePayment(
     String customerId,
@@ -29,7 +25,7 @@ class TvCubit extends Cubit<TvState> {
     try {
       if (authProvider.authState is Verified) {
         Verified verified = authProvider.authState as Verified;
-        String tvPayment = ussdMethods.tvPayment(
+        String tvPayment = UssdMethods.tvPayment(
           customerId: customerId,
           pin: verified.pin,
           tvOption: selectedTv,

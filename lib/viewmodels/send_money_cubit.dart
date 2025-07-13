@@ -13,11 +13,7 @@ import '../utils/error_message.dart';
 import 'states/verification_state.dart';
 
 class SendMoneyCubit extends Cubit<SendMoneyState> {
-  late UssdMethods ussdMethods;
-
-  SendMoneyCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(SendMoneyInitial(0));
+  SendMoneyCubit() : super(SendMoneyInitial(0));
 
   void updateAmount(int amount) {
     emit(SendMoneyInitial(amount));
@@ -39,7 +35,7 @@ class SendMoneyCubit extends Cubit<SendMoneyState> {
       try {
         if (authProvider.authState is Verified) {
           String sendMoneyCode =
-              ussdMethods.sendMoney(toContact, verified.pin, amount.toString());
+              UssdMethods.sendMoney(toContact, verified.pin, amount.toString());
           String? response = await UssdAdvanced.sendAdvancedUssd(
             code: sendMoneyCode,
             subscriptionId: verified.subscriptionId,

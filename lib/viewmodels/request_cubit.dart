@@ -14,11 +14,7 @@ import '../utils/error_message.dart';
 import 'states/verification_state.dart';
 
 class RequestCubit extends Cubit<RequestState> {
-  late UssdMethods ussdMethods;
-
-  RequestCubit()
-      : ussdMethods = getIt<UssdMethods>(),
-        super(RequestInitial(0));
+  RequestCubit() : super(RequestInitial(0));
 
   void updateAmount(int amount) {
     emit(RequestInitial(amount));
@@ -39,7 +35,7 @@ class RequestCubit extends Cubit<RequestState> {
       emit(Requesting());
       try {
         if (authProvider.authState is Verified) {
-          String requestMoneycode = ussdMethods.requestMoney(
+          String requestMoneycode = UssdMethods.requestMoney(
               toContact, verified.pin, amount.toString());
           String? response = await UssdAdvanced.sendAdvancedUssd(
             code: requestMoneycode,
