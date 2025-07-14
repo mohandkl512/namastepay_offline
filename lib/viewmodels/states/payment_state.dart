@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 abstract class PaymentState extends Equatable {}
 
 class PaymentInitial extends PaymentState {
-  int amount;
+  final int amount;
   PaymentInitial(this.amount);
   @override
   List<Object?> get props => [];

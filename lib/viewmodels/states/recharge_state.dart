@@ -4,7 +4,7 @@ import 'package:ussd_npay/utils/sim_type.dart';
 abstract class RechargeState extends Equatable {}
 
 class RechargeInitial extends RechargeState {
-  int amount;
+  final int amount;
   RechargeInitial(this.amount);
   @override
   List<Object?> get props => [];

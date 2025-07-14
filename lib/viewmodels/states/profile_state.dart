@@ -11,7 +11,7 @@ class ProfileLoaded extends ProfileState {
   final String? referalCode;
   final String? changedPin;
   ProfileLoaded(this.referalCode,this.changedPin);
-  
+
   @override
   List<Object?> get props => [referalCode];
 }
@@ -24,7 +24,7 @@ class ProfileLoading extends ProfileState {
 class ProfileError extends ProfileState {
   final String message;
   ProfileError(this.message);
-  
+
   @override
   List<Object?> get props => [message];
 }

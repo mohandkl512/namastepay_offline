@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 abstract class RequestState extends Equatable {}
 
 class RequestInitial extends RequestState {
-  int amount;
-   RequestInitial(this.amount);
+  final int amount;
+  RequestInitial(this.amount);
   @override
   List<Object?> get props => [amount];
 }

@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 abstract class TvState extends Equatable {}
 
 class TvInitial extends TvState {
-  int amount;
-  String? tvType;
-  String? paymentOption;
+  final int amount;
+  final String? tvType;
+  final String? paymentOption;
   TvInitial({required this.amount, this.tvType, this.paymentOption});
   @override
   List<Object?> get props => [amount];

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 abstract class LandlineRechargeState extends Equatable {}
 
 class LandlineRechargeInitial extends LandlineRechargeState {
-  int amount;
+  final int amount;
   LandlineRechargeInitial(this.amount);
   @override
   List<Object?> get props => [];

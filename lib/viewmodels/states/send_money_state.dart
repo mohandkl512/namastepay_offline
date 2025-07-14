@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 abstract class SendMoneyState extends Equatable {}
 
 class SendMoneyInitial extends SendMoneyState {
-  int amount;
-   SendMoneyInitial(this.amount);
+  final int amount;
+  SendMoneyInitial(this.amount);
   @override
   List<Object?> get props => [amount];
 }
