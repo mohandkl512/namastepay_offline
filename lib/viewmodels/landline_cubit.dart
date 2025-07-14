@@ -1,80 +1,46 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ussd_advanced/ussd_advanced.dart';
-import 'package:ussd_npay/main.dart';
+
+import 'package:bloc/bloc.dart';
 import 'package:ussd_npay/services/ussd/ussd_methods.dart';
 import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/display_message.dart';
 import 'package:ussd_npay/utils/error_message.dart';
-import 'package:ussd_npay/utils/errors/auth_error_message.dart';
-import 'package:ussd_npay/viewmodels/states/landline_recharge_state.dart';
-import '../authentication_provider.dart';
-import '../utils/debug_print.dart';
-import 'states/verification_state.dart';
+
+import 'states/landline_recharge_state.dart';
+import 'ussd_handler.dart';
 
 class LandlineCubit extends Cubit<LandlineRechargeState> {
   LandlineCubit() : super(LandlineRechargeInitial(0));
 
-  Future<void> payBill(
-    int amount,
-    String contactNum,
-  ) async {
-    dPrint(contactNum);
-    final AuthenticationProvider authProvider = getIt<AuthenticationProvider>();
-    Verified verified = authProvider.authState as Verified;
+  Future<void> payBill(int amount, String contactNum) async =>
+      sendUssdIfVerified(
+        onVerified: (verified) {
+          // TODO: is this check necessary?
+          if (!Utils.isPinValid(verified.pin)) {
+            throw ServiceException(ErrorMessage.pinvalidationError);
+          }
 
-    if (!Utils.isPinValid(verified.pin)) {
-      emit(LandlineError(ErrorMessage.pinvalidationError));
-    } else {
-      emit(LandlineRecharging());
-      try {
-        if (authProvider.authState is Verified) {
-          String landlineRechargeCode = UssdMethods.landlineRecharge(
+          emit(LandlineRecharging());
+          return UssdMethods.landlineRecharge(
               contactNum, verified.pin, amount.toString());
-          String? response = await UssdAdvanced.sendAdvancedUssd(
-            code: landlineRechargeCode,
-            subscriptionId: verified.subscriptionId,
-          );
-          dPrint(response);
-          dPrint(response?.contains(ErrorMessage.trasactionAmount));
-          if (response != null &&
-              response.contains(ErrorMessage.transactionFailed)) {
+        },
+        onResponse: (_, response) {
+          if (response
+                  ?.toLowerCase()
+                  .contains(ErrorMessage.transactionFailed.toLowerCase()) ??
+              false) {
             emit(LandlineError(DisplayMessage.transactionFailed));
-          } else if (response != null &&
-              response.contains(ErrorMessage.trasactionAmount)) {
-            emit(LandlineError(response));
+          } else if (response
+                  ?.toLowerCase()
+                  .contains(ErrorMessage.trasactionAmount.toLowerCase()) ??
+              false) {
+            emit(LandlineError(response ?? ''));
           } else {
             emit(LandlineRechargeSelected(response));
           }
-        }
-      } on PlatformException catch (exception) {
-        dPrint(exception.details);
-        dPrint(exception.message);
-        dPrint(exception.code);
-        emit(LandlineError(ErrorMessage.unexpectedError));
-      }
-    }
-  }
+        },
+        onError: (error) => emit(LandlineError(error)),
+      );
 
-  void updateAmount(int amount) {
-    emit(LandlineRechargeInitial(amount));
-  }
-
-  String checkMessageAndRespond(String message) {
-    if (message.contains(AuthErrorMessage.invalidPinFirstAttempt)) {
-      return DisplayMessage.invalidPinFirstAttempt;
-    } else if (message.contains(AuthErrorMessage.invalidPinSecondAttempt)) {
-      return DisplayMessage.invalidPinSecondAttempt;
-    } else if (message.contains(AuthErrorMessage.invalidPinThirdAttempt)) {
-      return DisplayMessage.invalidPinSecondAttempt;
-    } else if (message
-        .contains(AuthErrorMessage.servicesCurrentlyNotAvailable)) {
-      return DisplayMessage.servicesCurrentlyNotAvailable;
-    } else if (message.contains(AuthErrorMessage.registrationFlowActive)) {
-      return DisplayMessage.registrationFlowActive;
-    } else {
-      return DisplayMessage.unexpectedError;
-    }
-  }
+  void updateAmount(int amount) => emit(LandlineRechargeInitial(amount));
 }

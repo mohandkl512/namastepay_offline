@@ -178,7 +178,7 @@ class _NtftthPaymentState extends State<NtftthPayment> {
                             if (validated) {
                               final paymentsCubit =
                                   context.read<PaymentsCubit>();
-                              paymentsCubit.makePaymentUAT(
+                              paymentsCubit.makePayment(
                                   _phoneController.text,
                                   IspData.ntffth,
                                   _amountController.text);

@@ -177,7 +177,7 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                           if(kReleaseMode){
                           if (validated) {
                             final paymentsCubit = context.read<PaymentsCubit>();
-                            paymentsCubit.makePaymentUAT(_phoneController.text,
+                            paymentsCubit.makePayment(_phoneController.text,
                                 IspData.ntadsl, _amountController.text);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
