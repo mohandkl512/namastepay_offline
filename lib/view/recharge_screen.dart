@@ -15,7 +15,7 @@ class RechargeScreen extends StatefulWidget {
   const RechargeScreen({super.key});
 
   @override
-  _RechargeScreenState createState() => _RechargeScreenState();
+  State<RechargeScreen> createState() => _RechargeScreenState();
 }
 
 class _RechargeScreenState extends State<RechargeScreen> {
@@ -27,7 +27,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
   // List of available network operators
   final List<String> operators = [MNO.nt, MNO.ncell];
-  
+
   @override
   void initState() {
     super.initState();

@@ -19,7 +19,6 @@ import '../authentication_provider.dart';
 import '../utils/namaste_pay_icons.dart';
 import '../utils/string_modification.dart';
 import 'profile_page.dart';
-import 'statements_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,11 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // Initial index of the selected item
   bool amountVisible = false;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index; // Update the selected index
-    });
-  }
+  void _onItemTapped(int index)
 
   @override
   void initState() {
@@ -82,14 +77,18 @@ class _HomePageState extends State<HomePage> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
-          onTap: _onItemTapped, // Set the onTap function to update the index
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index; // Update the selected index
+            });
+          }, // Set the onTap function to update the index
 
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-        
+
             BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),
               label: 'Profile',

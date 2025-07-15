@@ -9,12 +9,13 @@ import 'package:ussd_npay/utils/npay_texts.dart';
 import 'package:ussd_npay/viewmodels/cashout_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/cashout_state.dart';
 import '../utils/error_dialog.dart';
+import 'package:ussd_npay/widgets/form_page.dart';
 
 class CashoutPage extends StatefulWidget {
   const CashoutPage({super.key});
 
   @override
-  _CashoutPageState createState() => _CashoutPageState();
+  State<CashoutPage> createState() => _CashoutPageState();
 }
 
 class _CashoutPageState extends State<CashoutPage> {
@@ -22,7 +23,6 @@ class _CashoutPageState extends State<CashoutPage> {
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isFormValid = false;
-
 
   @override
   void initState() {
@@ -50,129 +50,114 @@ class _CashoutPageState extends State<CashoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Cash Out",
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                maxLength: 10,
-                validator: Validator.validatePhoneNumber,
-                onChanged: (value) {
-                  _formKey.currentState?.validate();
-                },
-                decoration: InputDecoration(
-                  labelText: "Agent Phone Number",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              TextFormField(
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Amount: Minimum Rs.100',
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 8.0,
-                    ), // Add padding to ensure proper spacing
-                    child: Text(
-                      NpayTexts.rs, // Currency symbol or any other text
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                validator: Validator.amountValidator,
-                onChanged: (value) {
-                  _validateForm();
-                },
-              ),
-              const SizedBox(height: 32),
-              BlocConsumer<CashoutCubit, CashoutState>(
-                listener: (context, state) {
-                  dPrint("Current State: $state");
-                  if (state is CashoutDone) {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RoutesName.cashoutSuccess,
-                      (_) => false,
-                    );
-                  } else if (state is CashoutError) {
-                    showErrorDialog(context, "Error Occured", state.message);
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RoutesName.cashoutSuccess,
-                      (_) => false,
-                    );
-                  } else if (state is CashoutProcessing) {
-                    showLoadingDialog(context);
-                  }
-                },
-                builder: (BuildContext context, CashoutState state) {
-                  return Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_isFormValid) {
-                          if (int.parse(_amountController.text) >= 100) {
-                            _processCashout();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    const Text("Enter amount more than 90"),
-                                backgroundColor: Colors.red[400],
-                                duration: const Duration(
-                                  seconds: 3,
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        backgroundColor: _isFormValid
-                            ? AppColors.buttonColor
-                            : AppColors.accentColor,
-                      ),
-                      child: Text(
-                        "Proceed to Cashout",
-                        style: _isFormValid
-                            ? Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: Colors.white)
-                            : Theme.of(context).textTheme.labelLarge,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+    return FormPage(
+      title: 'Cash Out',
+      formKey: _formKey,
+      children: [
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _phoneController,
+          keyboardType: TextInputType.phone,
+          maxLength: 10,
+          validator: Validator.validatePhoneNumber,
+          onChanged: (value) {
+            _formKey.currentState?.validate();
+          },
+          decoration: InputDecoration(
+            labelText: "Agent Phone Number",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
-      ),
+        TextFormField(
+          controller: _amountController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: 'Amount: Minimum Rs.100',
+            prefixIcon: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 8.0,
+              ), // Add padding to ensure proper spacing
+              child: Text(
+                NpayTexts.rs, // Currency symbol or any other text
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          validator: Validator.amountValidator,
+          onChanged: (value) {
+            _validateForm();
+          },
+        ),
+        const SizedBox(height: 32),
+        BlocConsumer<CashoutCubit, CashoutState>(
+          listener: (context, state) {
+            dPrint("Current State: $state");
+            if (state is CashoutDone) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                RoutesName.cashoutSuccess,
+                (_) => false,
+              );
+            } else if (state is CashoutError) {
+              showErrorDialog(context, "Error Occured", state.message);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                RoutesName.cashoutSuccess,
+                (_) => false,
+              );
+            } else if (state is CashoutProcessing) {
+              showLoadingDialog(context);
+            }
+          },
+          builder: (BuildContext context, CashoutState state) {
+            return Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_isFormValid) {
+                    if (int.parse(_amountController.text) >= 100) {
+                      _processCashout();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text("Enter amount more than 90"),
+                          backgroundColor: Colors.red[400],
+                          duration: const Duration(
+                            seconds: 3,
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  backgroundColor: _isFormValid
+                      ? AppColors.buttonColor
+                      : AppColors.accentColor,
+                ),
+                child: Text(
+                  "Proceed to Cashout",
+                  style: _isFormValid
+                      ? Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: Colors.white)
+                      : Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }
