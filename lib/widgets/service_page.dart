@@ -132,17 +132,17 @@ class NumberFormField extends StatelessWidget {
   });
 
   // TODO: remove magic numbers
-  const NumberFormField.amount({
+  NumberFormField.amount({
     super.key,
+    int minimum = 0,
     this.controller,
     this.labelText,
     this.maxLength,
     this.onChanged,
     this.suffixIcon,
     this.obscureText = false,
-    this.validator = Validator.amountValidator,
     this.prefixIcon = const NepaliRupeeIcon(),
-  });
+  }) : validator = Validator.createAmountValidator(minimum);
 
   // TODO: use correct icons
   const NumberFormField.cellPhone({

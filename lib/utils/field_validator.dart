@@ -28,57 +28,28 @@ class Validator {
             : null);
   }
 
-  static String? amountValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Amount is required';
-    }
+  static String? Function(String? value) createAmountValidator(int minimum) {
+    return (value) {
+      if (value == null || value.isEmpty) {
+        return 'Amount is required';
+      }
 
-    // Try to parse the value to a number
-    final amount = int.tryParse(value);
+      final amount = int.tryParse(value);
 
-    if (amount == null) {
-      return 'Invalid amount';
-    }
+      if (amount == null) {
+        return 'Invalid amount';
+      }
 
-    // Additional checks, e.g., if the amount should be positive
-    if (amount <= 0) {
-      return 'Amount should be greater than zero';
-    }
-    return null;
+      if (amount <= 0) {
+        return 'Amount must be greater than 0';
+      } else if (amount < minimum) {
+        return 'Amount cannot be less than $minimum';
+      }
+      return null;
+    };
   }
 
   static String? pinValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please confirm your PIN';
-    }
-    if (value.length != 4) {
-      return 'PIN must be 4 digits';
-    }
-    return null;
-  }
-
-  // agent cash out amount greater or equal to 100
-  static String? cashOutAmountValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Amount is required';
-    }
-
-    // Try to parse the value to a number
-    final amount = double.tryParse(value);
-
-    if (amount == null) {
-      return 'Invalid amount';
-    }
-
-    // Additional checks, e.g., if the amount should be positive
-    if (amount <= 99) {
-      return 'Minimum Amount is Rs 100';
-    }
-    return null;
-  }
-
-  // validate pin
-  static String? validatePin(String? value) {
     if (value == null || value.isEmpty) {
       return 'Pin is required';
     } else if (value.length < 4) {

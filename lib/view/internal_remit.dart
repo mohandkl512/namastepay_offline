@@ -16,10 +16,10 @@ class _InternalRemitState extends State<InternalRemit> {
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  static const int minAmount = 100;
+  static const int _minAmount = 100;
 
   void _processRemit() async {
-    if (int.parse(_amountController.text) >= minAmount) {
+    if (int.parse(_amountController.text) >= _minAmount) {
       if (mounted) {
         final cashoutCubit = context.read<InternalRemitCubit>();
         await cashoutCubit.processInternalRemit(
@@ -30,7 +30,7 @@ class _InternalRemitState extends State<InternalRemit> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Enter amount more than Rs.$minAmount'),
+          content: const Text('Enter amount more than Rs.$_minAmount'),
           backgroundColor: Colors.red[400],
           duration: const Duration(
             seconds: 3,
@@ -52,9 +52,11 @@ class _InternalRemitState extends State<InternalRemit> {
             controller: _phoneController,
             labelText: 'Receiver Phone Number (Unregistered)',
           ),
+          const SizedBox(height: 8),
           NumberFormField.amount(
             controller: _amountController,
-            labelText: 'Amount: Minimum Rs.$minAmount',
+            labelText: 'Amount: Minimum Rs.$_minAmount',
+            minimum: _minAmount,
           ),
           const SizedBox(height: 32),
           ServiceFormSubmitButton(

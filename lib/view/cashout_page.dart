@@ -16,6 +16,8 @@ class _CashoutPageState extends State<CashoutPage> {
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  static const int _minAmount = 100;
+
   void _processCashout() async {
     if (mounted) {
       final cashoutCubit = context.read<CashoutCubit>();
@@ -36,9 +38,11 @@ class _CashoutPageState extends State<CashoutPage> {
             controller: _phoneController,
             labelText: 'Agent Phone Number',
           ),
+          const SizedBox(height: 8),
           NumberFormField.amount(
             controller: _amountController,
-            labelText: 'Amount: Minimum Rs.100',
+            labelText: 'Amount: Minimum Rs.$_minAmount',
+            minimum: _minAmount,
           ),
           const SizedBox(height: 32),
           ServiceFormSubmitButton(
