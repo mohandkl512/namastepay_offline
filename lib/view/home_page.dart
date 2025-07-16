@@ -30,7 +30,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // Initial index of the selected item
   bool amountVisible = false;
-  void _onItemTapped(int index)
 
   @override
   void initState() {

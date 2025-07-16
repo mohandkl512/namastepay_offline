@@ -79,15 +79,9 @@ class _TvPaymentPageState extends State<TvPaymentPage> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextFormField(
+          child: NumberFormField(
             controller: _controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Customer ID',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+            labelText: 'Customer ID',
             onChanged: (value) {
               _validateForm();
             },
@@ -98,11 +92,6 @@ class _TvPaymentPageState extends State<TvPaymentPage> {
             dPrint(state);
             switch (state) {
               case TvRequestSucessfull _:
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RoutesName.tvSuccess,
-                  (_) => false,
-                );
               case TvRequestError _:
                 Navigator.pushNamedAndRemoveUntil(
                   context,

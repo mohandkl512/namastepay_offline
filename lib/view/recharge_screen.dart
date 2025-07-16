@@ -5,10 +5,10 @@ import 'package:ussd_npay/utils.dart';
 import 'package:ussd_npay/utils/app_colors.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
-import 'package:ussd_npay/utils/npay_texts.dart';
 import 'package:ussd_npay/utils/operators.dart';
 import 'package:ussd_npay/viewmodels/recharge_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/recharge_state.dart';
+import 'package:ussd_npay/widgets/form_page.dart';
 import '../utils/error_dialog.dart';
 
 class RechargeScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
     setState(() {
       _isFormValid =
-          Validator.validatePhoneNumber(_phoneController.text) == null &&
+          Validator.cellPhoneNumberValidator(_phoneController.text) == null &&
               _selectedOperator != null &&
               Validator.amountValidator(_amountController.text) == null;
     });
@@ -86,11 +86,9 @@ class _RechargeScreenState extends State<RechargeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-              TextFormField(
+              NumberFormField.cellPhone(
                 controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                maxLength: 10,
-                validator: Validator.validatePhoneNumber,
+                labelText: 'Phone Number',
                 onChanged: (value) {
                   if (value.length == 10) {
                     setState(() {
@@ -99,12 +97,6 @@ class _RechargeScreenState extends State<RechargeScreen> {
                   }
                   _formKey.currentState?.validate();
                 },
-                decoration: InputDecoration(
-                  labelText: "Phone Number",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
               ),
 
               _selectedOperator == null && _phoneController.text.length < 10
@@ -124,29 +116,9 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
               const SizedBox(height: 8),
 
-              TextFormField(
+              NumberFormField.amount(
                 controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Amount',
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 8.0,
-                    ), // Add padding to ensure proper spacing
-                    child: Text(
-                      NpayTexts.rs, // Currency symbol or any other text
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                validator: Validator.amountValidator,
+                labelText: 'Amount',
                 onChanged: (value) {
                   _validateForm();
                 },

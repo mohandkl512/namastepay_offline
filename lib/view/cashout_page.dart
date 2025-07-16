@@ -5,7 +5,6 @@ import 'package:ussd_npay/utils/app_colors.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
 import 'package:ussd_npay/utils/loading_dialog.dart';
-import 'package:ussd_npay/utils/npay_texts.dart';
 import 'package:ussd_npay/viewmodels/cashout_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/cashout_state.dart';
 import '../utils/error_dialog.dart';
@@ -35,7 +34,7 @@ class _CashoutPageState extends State<CashoutPage> {
 
     setState(() {
       _isFormValid =
-          Validator.validatePhoneNumber(_phoneController.text) == null &&
+          Validator.cellPhoneNumberValidator(_phoneController.text) == null &&
               Validator.amountValidator(_amountController.text) == null;
     });
   }
@@ -55,43 +54,16 @@ class _CashoutPageState extends State<CashoutPage> {
       formKey: _formKey,
       children: [
         const SizedBox(height: 8),
-        TextFormField(
+        NumberFormField.cellPhone(
           controller: _phoneController,
-          keyboardType: TextInputType.phone,
-          maxLength: 10,
-          validator: Validator.validatePhoneNumber,
+          labelText: 'Agent Phone Number',
           onChanged: (value) {
             _formKey.currentState?.validate();
           },
-          decoration: InputDecoration(
-            labelText: "Agent Phone Number",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
         ),
-        TextFormField(
+        NumberFormField.amount(
           controller: _amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: 'Amount: Minimum Rs.100',
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 8.0,
-              ), // Add padding to ensure proper spacing
-              child: Text(
-                NpayTexts.rs, // Currency symbol or any other text
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          validator: Validator.amountValidator,
+          labelText: 'Amount: Minimum Rs.100',
           onChanged: (value) {
             _validateForm();
           },

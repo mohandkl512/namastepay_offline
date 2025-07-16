@@ -8,11 +8,10 @@ import 'package:ussd_npay/utils/isp_data.dart';
 import 'package:ussd_npay/utils/namaste_pay_icons.dart';
 import 'package:ussd_npay/viewmodels/payments_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/payment_state.dart';
+import 'package:ussd_npay/widgets/form_page.dart';
 import '../../routes/route_path.dart';
 import '../../utils/error_dialog.dart';
-import '../../utils/field_validator.dart';
 import '../../utils/loading_dialog.dart';
-import '../../utils/npay_texts.dart';
 
 class NtadslPayment extends StatefulWidget {
   final String title;
@@ -22,44 +21,13 @@ class NtadslPayment extends StatefulWidget {
   State<NtadslPayment> createState() => _NtadslPaymentState();
 }
 
+// TODO: do proper validation
+
 class _NtadslPaymentState extends State<NtadslPayment> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? _landlineError;
-  String? _amountError;
   bool validated = false;
-  @override
-  void initState() {
-    super.initState();
-    _phoneController.addListener(() {
-      setState(() {
-        _landlineError = Utils.isValidLandline(_phoneController.text)
-            ? null
-            : "Not a valid landline number";
-      });
-      validateBoth();
-    });
-    _amountController.addListener(() {
-      setState(() {
-        _amountError = Validator.amountValidator(_amountController.text) == null
-            ? null
-            : "Enter a valid amount";
-      });
-      validateBoth();
-    });
-  }
-
-  validateBoth() {
-    if (Validator.amountValidator(_amountController.text) == null &&
-        Utils.isValidLandline(_phoneController.text)) {
-      setState(() {
-        validated = true;
-      });
-    } else {
-      validated = false;
-    }
-  }
 
   @override
   void dispose() {
@@ -89,7 +57,7 @@ class _NtadslPaymentState extends State<NtadslPayment> {
               ),
               SizedBox(width: 10.w),
               Text(
-                "NT ADSL",
+                'NT ADSL',
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge
@@ -106,49 +74,18 @@ class _NtadslPaymentState extends State<NtadslPayment> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                TextFormField(
+                NumberFormField.landline(
                   controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  maxLength: 9,
                   validator: (String? message) =>
                       Utils.isValidLandline(_phoneController.text)
                           ? null
-                          : "Invalid Input",
-                  decoration: InputDecoration(
-                    labelText: "Landline Number",
-                    errorText: _landlineError,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                          : 'Invalid Input',
+                  labelText: 'Landline Number',
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
+                NumberFormField.amount(
                   controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Amount',
-                    errorText: _amountError,
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 8.0,
-                      ), // Add padding to ensure proper spacing
-                      child: Text(
-                        NpayTexts.rs, // Currency symbol or any other text
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: Validator.amountValidator,
+                  labelText: 'Amount',
                 ),
                 const SizedBox(height: 32),
                 BlocConsumer<PaymentsCubit, PaymentState>(
@@ -160,7 +97,7 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                         (_) => false,
                       );
                     } else if (state is PaymentError) {
-                      showErrorDialog(context, "Error Occured", state.message);
+                      showErrorDialog(context, 'Error Occured', state.message);
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         RoutesName.ispPaymentSucess,
@@ -174,27 +111,27 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                     return Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          if(kReleaseMode){
-                          if (validated) {
-                            final paymentsCubit = context.read<PaymentsCubit>();
-                            paymentsCubit.makePayment(_phoneController.text,
-                                IspData.ntadsl, _amountController.text);
+                          if (kReleaseMode) {
+                            if (validated) {
+                              final paymentsCubit =
+                                  context.read<PaymentsCubit>();
+                              paymentsCubit.makePayment(_phoneController.text,
+                                  IspData.ntadsl, _amountController.text);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Validation Error'),
+                                  backgroundColor: Colors.red[400],
+                                  duration: const Duration(
+                                    seconds: 3,
+                                  ),
+                                ),
+                              );
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Text("Validation Error"),
-                                backgroundColor: Colors.red[400],
-                                duration: const Duration(
-                                  seconds: 3,
-                                ),
-                              ),
-                            );
-                          }
-
-                          }else{
-                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text("Only Available on Live"),
+                                content: const Text('Only Available on Live'),
                                 backgroundColor: Colors.red[400],
                                 duration: const Duration(
                                   seconds: 3,
@@ -211,7 +148,7 @@ class _NtadslPaymentState extends State<NtadslPayment> {
                               : AppColors.lightGreyColor,
                         ),
                         child: Text(
-                          "Pay",
+                          'Pay',
                           style: validated
                               ? Theme.of(context)
                                   .textTheme

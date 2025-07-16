@@ -24,7 +24,7 @@ class Utils {
   }
 
   static bool isValidPhoneNumber(String phoneNumber) {
-    final response = Validator.validatePhoneNumber(removePrefix(phoneNumber));
+    final response = Validator.cellPhoneNumberValidator(removePrefix(phoneNumber));
     if (response == null) {
       dPrint("valid phone number");
       return true;

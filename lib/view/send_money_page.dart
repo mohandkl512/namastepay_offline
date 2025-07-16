@@ -6,7 +6,6 @@ import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/viewmodels/states/send_money_state.dart';
 import '../routes/route_path.dart';
 import '../utils/app_colors.dart';
-import '../utils/npay_texts.dart';
 import '../viewmodels/send_money_cubit.dart';
 import 'package:ussd_npay/widgets/form_page.dart';
 
@@ -27,7 +26,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
     dPrint(_phoneController.text);
     setState(() {
       _isFormValid =
-          Validator.validatePhoneNumber(_phoneController.text) == null &&
+          Validator.cellPhoneNumberValidator(_phoneController.text) == null &&
               Validator.amountValidator(_amountController.text) == null;
     });
   }
@@ -45,43 +44,17 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
       formKey: _formKey,
       children: [
         const SizedBox(height: 8),
-        TextField(
+        NumberFormField.cellPhone(
           controller: _phoneController,
-          keyboardType: TextInputType.phone,
-          maxLength: 10,
-          decoration: InputDecoration(
-            labelText: "Phone Number",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+          labelText: 'Phone Number',
           onChanged: (value) {
             _validateForm();
           },
         ),
         const SizedBox(height: 8),
-        TextFormField(
+        NumberFormField.amount(
           controller: _amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: 'Amount',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 8.0,
-              ), // Add padding to ensure proper spacing
-              child: Text(
-                NpayTexts.rs, // Currency symbol or any other text
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-          ),
-          validator: Validator.amountValidator,
+          labelText: 'Amount',
           onChanged: (value) {
             _validateForm();
           },
@@ -90,20 +63,21 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         BlocConsumer<SendMoneyCubit, SendMoneyState>(
           listener: (context, state) {
             dPrint(state);
-            if (state is SentMoney) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                RoutesName.moneySent,
-                (_) => false,
-              );
-            } else if (state is SendMoneyError) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                RoutesName.moneySent,
-                (_) => false,
-              );
-            } else if (state is SendingMoney) {
-              showLoadingDialog(context);
+            switch (state) {
+              case SentMoney _:
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RoutesName.moneySent,
+                  (_) => false,
+                );
+              case SendMoneyError _:
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RoutesName.moneySent,
+                  (_) => false,
+                );
+              case SendingMoney _:
+                showLoadingDialog(context);
             }
           },
           builder: (context, state) {
@@ -116,7 +90,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text(
-                            "Either Phone number or amount is invalid"),
+                            'Either Phone number or amount is invalid'),
                         backgroundColor: Colors.red[400],
                         duration: const Duration(
                           seconds: 3,
@@ -133,7 +107,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                       : AppColors.accentColor,
                 ),
                 child: Text(
-                  "Send Money",
+                  'Send Money',
                   style: _isFormValid
                       ? Theme.of(context)
                           .textTheme

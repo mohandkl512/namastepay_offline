@@ -43,68 +43,36 @@ class _ChangePinPageState extends State<ChangePinPage> {
       title: 'Change PIN',
       formKey: _formKey,
       children: [
-        TextFormField(
+        NumberFormField.pin(
           controller: _newPinController,
           obscureText: _obscureText,
-          keyboardType: TextInputType.number,
-          maxLength: 4,
-          decoration: InputDecoration(
-            labelText: 'New PIN',
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility_off : Icons.visibility,
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
+          labelText: 'New PIN',
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility_off : Icons.visibility,
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter a PIN';
-            }
-            if (value.length != 4) {
-              return 'PIN must be 4 digits';
-            }
-            return null;
-          },
         ),
         SizedBox(height: 1.h),
-        TextFormField(
+        NumberFormField.pin(
           controller: _confirmPinController,
           obscureText: _obscureText,
-          keyboardType: TextInputType.number,
-          maxLength: 4,
-          decoration: InputDecoration(
-            labelText: 'Confirm PIN',
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility_off : Icons.visibility,
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
+          labelText: 'Confirm PIN',
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility_off : Icons.visibility,
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please confirm your PIN';
-            }
-            if (value.length != 4) {
-              return 'PIN must be 4 digits';
-            }
-            return null;
-          },
         ),
         SizedBox(height: 1.h),
         if (_errorMessage.isNotEmpty)
@@ -115,14 +83,15 @@ class _ChangePinPageState extends State<ChangePinPage> {
         SizedBox(height: 1.h),
         BlocListener<ProfileCubit, ProfileState>(
           listener: (context, state) {
-            if (state is ProfileLoading) {
-              showLoadingDialog(context);
-            } else if (state is ProfileError) {
-              Navigator.pop(context);
-              showCustomToast(context, "Error Occured Changing Pin");
-            } else if (state is ProfileLoaded) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, RoutesName.login, (_) => false);
+            switch (state) {
+              case ProfileLoaded _:
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RoutesName.login, (_) => false);
+              case ProfileError _:
+                Navigator.pop(context);
+                showCustomToast(context, 'Error Occured Changing Pin');
+              case ProfileLoading _:
+                showLoadingDialog(context);
             }
           },
           child: ElevatedButton(
@@ -133,7 +102,7 @@ class _ChangePinPageState extends State<ChangePinPage> {
               backgroundColor: AppColors.buttonColor,
             ),
             child: Text(
-              "Proceed",
+              'Proceed',
               style: Theme.of(context)
                   .textTheme
                   .labelLarge

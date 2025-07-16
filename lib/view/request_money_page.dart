@@ -25,7 +25,7 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
   void _validateForm() {
     setState(() {
       _isFormValid =
-          Validator.validatePhoneNumber(_phoneController.text) == null &&
+          Validator.cellPhoneNumberValidator(_phoneController.text) == null &&
               Validator.amountValidator(_amountController.text) == null;
     });
   }
@@ -43,43 +43,17 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
       formKey: _formKey,
       children: [
         const SizedBox(height: 8),
-        TextField(
+        NumberFormField.cellPhone(
           controller: _phoneController,
-          keyboardType: TextInputType.phone,
-          maxLength: 10,
-          decoration: InputDecoration(
-            labelText: "Phone Number",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+          labelText: 'Phone Number',
           onChanged: (value) {
             _validateForm();
           },
         ),
         const SizedBox(height: 8),
-        TextFormField(
+        NumberFormField.amount(
           controller: _amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: 'Amount',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 8.0,
-              ), // Add padding to ensure proper spacing
-              child: Text(
-                NpayTexts.rs, // Currency symbol or any other text
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-          ),
-          validator: Validator.amountValidator,
+          labelText: 'Amount',
           onChanged: (value) {
             _validateForm();
           },
@@ -95,7 +69,7 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
                   (_) => false,
                 );
               case RequestError _:
-                // showErrorDialog(context, "Error Occured", state.message);
+                // showErrorDialog(context, 'Error Occured', state.message);
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   RoutesName.requestCompleted,
@@ -115,7 +89,7 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text(
-                            "Either Phone number or amount is invalid"),
+                            'Either Phone number or amount is invalid'),
                         backgroundColor: Colors.red[400],
                         duration: const Duration(
                           seconds: 3,
@@ -132,7 +106,7 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
                       : AppColors.accentColor,
                 ),
                 child: Text(
-                  "Request Money",
+                  'Request Money',
                   style: _isFormValid
                       ? Theme.of(context)
                           .textTheme

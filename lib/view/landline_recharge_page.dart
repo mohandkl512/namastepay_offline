@@ -7,7 +7,6 @@ import 'package:ussd_npay/viewmodels/states/landline_recharge_state.dart';
 import '../routes/route_path.dart';
 import '../utils/app_colors.dart';
 import '../utils/field_validator.dart';
-import '../utils/npay_texts.dart';
 import 'package:ussd_npay/widgets/form_page.dart';
 
 class LandlineRechargePage extends StatefulWidget {
@@ -43,43 +42,17 @@ class _LandlineRechargePageState extends State<LandlineRechargePage> {
       formKey: _formKey,
       children: [
         const SizedBox(height: 8),
-        TextField(
+        NumberFormField.landline(
           controller: _phoneController,
-          keyboardType: TextInputType.phone,
-          maxLength: 9,
-          decoration: InputDecoration(
-            labelText: "Phone Number",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+          labelText: 'Phone Number',
           onChanged: (value) {
             _validateForm();
           },
         ),
         const SizedBox(height: 8),
-        TextFormField(
+        NumberFormField.amount(
           controller: _amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: 'Amount',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 8.0,
-              ),
-              child: Text(
-                NpayTexts.rs, // Currency symbol or any other text
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-          ),
-          validator: Validator.amountValidator,
+          labelText: 'Amount',
           onChanged: (value) {
             _validateForm();
           },
@@ -114,7 +87,7 @@ class _LandlineRechargePageState extends State<LandlineRechargePage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text(
-                            "Either Landline number or amount is invalid"),
+                            'Either Landline number or amount is invalid'),
                         backgroundColor: Colors.red[400],
                         duration: const Duration(
                           seconds: 3,
@@ -131,7 +104,7 @@ class _LandlineRechargePageState extends State<LandlineRechargePage> {
                       : AppColors.accentColor,
                 ),
                 child: Text(
-                  "Recharge",
+                  'Recharge',
                   style: _isFormValid
                       ? Theme.of(context)
                           .textTheme
