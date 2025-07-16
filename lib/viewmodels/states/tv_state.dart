@@ -1,8 +1,8 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class TvState extends Equatable {}
+typedef TvState = ServiceBaseState;
 
-class TvInitial extends TvState {
+class TvInitial extends ServiceBaseState {
   final int amount;
   final String? tvType;
   final String? paymentOption;
@@ -11,23 +11,12 @@ class TvInitial extends TvState {
   List<Object?> get props => [amount];
 }
 
-class TvRequestSucessfull extends TvState {
-  final String? response;
-  TvRequestSucessfull(this.response);
-
-  @override
-  List<Object?> get props => [response];
+class TvRequestSucessfull extends ServiceSuccessState {
+  TvRequestSucessfull(super.response);
 }
 
-class TvRequestLoading extends TvState {
-  @override
-  List<Object?> get props => [];
-}
+class TvRequestLoading extends ServiceLoadingState {}
 
-class TvRequestError extends TvState {
-  final String message;
-  TvRequestError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class TvRequestError extends ServiceErrorState {
+  TvRequestError(super.message);
 }

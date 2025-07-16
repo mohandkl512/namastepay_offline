@@ -9,9 +9,7 @@ import 'package:ussd_npay/utils/namaste_pay_icons.dart';
 import 'package:ussd_npay/viewmodels/payments_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/payment_state.dart';
 import 'package:ussd_npay/widgets/form_page.dart';
-import '../../routes/route_path.dart';
-import '../../utils/error_dialog.dart';
-import '../../utils/loading_dialog.dart';
+import 'package:ussd_npay/widgets/success_router.dart';
 
 class NtftthPayment extends StatefulWidget {
   final String title;
@@ -88,52 +86,19 @@ class _NtftthPaymentState extends State<NtftthPayment> {
                   labelText: 'Amount',
                 ),
                 const SizedBox(height: 32),
-                BlocConsumer<PaymentsCubit, PaymentState>(
-                  listener: (context, state) {
-                    switch (state) {
-                      case PaymentDone _:
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          RoutesName.ispPaymentSucess,
-                          (_) => false,
-                        );
-                      case PaymentError _:
-                        showErrorDialog(
-                            context, "Error Occured", state.message);
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          RoutesName.ispPaymentSucess,
-                          (_) => false,
-                        );
-                      case PaymentProcessing _:
-                        showLoadingDialog(context);
-                    }
-                  },
-                  builder: (BuildContext context, PaymentState state) {
-                    return Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (kReleaseMode) {
-                            if (validated) {
-                              final paymentsCubit =
-                                  context.read<PaymentsCubit>();
-                              paymentsCubit.makePayment(_phoneController.text,
-                                  IspData.ntffth, _amountController.text);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text("Validation Error"),
-                                  backgroundColor: Colors.red[400],
-                                  duration: const Duration(
-                                    seconds: 3,
-                                  ),
-                                ),
-                              );
-                            }
+                SuccessRouter<PaymentsCubit, PaymentState>(
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (kReleaseMode) {
+                          if (validated) {
+                            final paymentsCubit = context.read<PaymentsCubit>();
+                            paymentsCubit.makePayment(_phoneController.text,
+                                IspData.ntffth, _amountController.text);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Text("Only Available on Live"),
+                                content: const Text('Validation Error'),
                                 backgroundColor: Colors.red[400],
                                 duration: const Duration(
                                   seconds: 3,
@@ -141,30 +106,40 @@ class _NtftthPaymentState extends State<NtftthPayment> {
                               ),
                             );
                           }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: validated
-                              ? AppColors.buttonColor
-                              : AppColors.lightGreyColor,
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Only Available on Live'),
+                              backgroundColor: Colors.red[400],
+                              duration: const Duration(
+                                seconds: 3,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          "Pay",
-                          style: validated
-                              ? Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(color: Colors.white)
-                              : Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(color: Colors.black.withAlpha(80)),
-                        ),
+                        backgroundColor: validated
+                            ? AppColors.buttonColor
+                            : AppColors.lightGreyColor,
                       ),
-                    );
-                  },
+                      child: Text(
+                        'Pay',
+                        style: validated
+                            ? Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: Colors.white)
+                            : Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: Colors.black.withAlpha(80)),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

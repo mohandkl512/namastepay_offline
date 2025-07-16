@@ -6,36 +6,12 @@ class RoutesName {
   static const String topup = "/topup";
   static const String requestMoney = "/request_money";
   static const String sendMoney= "/send_money";
-  static const String rechargeComplete= "/recharge_complete";
-  static const String requestCompleted= "/request_complete";
-  static const String moneySent= "/money_sent";
   static const String landlineRecharge= "/landline_recharge";
-  static const String landlineSucess= "/landline_sucess";
-  static const String tvSuccess= "/tv_sucess";
   static const String tvPaymentPage= "/tv_payment";
   static const String neaPaymentPage= "/nea_payment";
   static const String internetPaymentPage= "/internet_payment";
   static const String ispListPage= "/isp_list";
-  static const String ispPaymentSucess= "/isp_payment_sucess";
   static const String changePinPage= "/change_pin";
   static const String cashoutPage= "/cashout";
-  static const String cashoutSuccess= "/cashout_success";
   static const String internalRemit= "/internal_remit";
-  static const String remitSucess= "/remit_success";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 }

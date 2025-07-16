@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ussd_npay/utils.dart';
-import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/viewmodels/landline_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/landline_recharge_state.dart';
-import '../routes/route_path.dart';
+import 'package:ussd_npay/widgets/success_router.dart';
+import 'package:ussd_npay/widgets/form_page.dart';
+
 import '../utils/app_colors.dart';
 import '../utils/field_validator.dart';
-import 'package:ussd_npay/widgets/form_page.dart';
 
 class LandlineRechargePage extends StatefulWidget {
   const LandlineRechargePage({super.key});
@@ -58,63 +58,43 @@ class _LandlineRechargePageState extends State<LandlineRechargePage> {
           },
         ),
         const SizedBox(height: 32),
-        BlocConsumer<LandlineCubit, LandlineRechargeState>(
-          listener: (context, state) {
-            switch(state) {
-              case LandlineRechargeSelected _:
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RoutesName.landlineSucess,
-                  (_) => false,
-                );
-              case LandlineError _:
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RoutesName.landlineSucess,
-                  (_) => false,
-                );
-              case LandlineRecharging _:
-                showLoadingDialog(context);
-            }
-          },
-          builder: (context, state) {
-            return Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_isFormValid) {
-                    _processRequest();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text(
-                            'Either Landline number or amount is invalid'),
-                        backgroundColor: Colors.red[400],
-                        duration: const Duration(
-                          seconds: 3,
-                        ),
+        SuccessRouter<LandlineCubit, LandlineRechargeState>(
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                if (_isFormValid) {
+                  _processRequest();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                          'Either Landline number or amount is invalid'),
+                      backgroundColor: Colors.red[400],
+                      duration: const Duration(
+                        seconds: 3,
                       ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: _isFormValid
-                      ? AppColors.buttonColor
-                      : AppColors.accentColor,
-                ),
-                child: Text(
-                  'Recharge',
-                  style: _isFormValid
-                      ? Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          ?.copyWith(color: Colors.white)
-                      : Theme.of(context).textTheme.labelLarge,
-                ),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                backgroundColor: _isFormValid
+                    ? AppColors.buttonColor
+                    : AppColors.accentColor,
               ),
-            );
-          },
+              child: Text(
+                'Recharge',
+                style: _isFormValid
+                    ? Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: Colors.white)
+                    : Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+          ),
         ),
       ],
     );

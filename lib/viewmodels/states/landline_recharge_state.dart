@@ -1,31 +1,20 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class LandlineRechargeState extends Equatable {}
+typedef LandlineRechargeState = ServiceBaseState;
 
-class LandlineRechargeInitial extends LandlineRechargeState {
+class LandlineRechargeInitial extends ServiceBaseState {
   final int amount;
   LandlineRechargeInitial(this.amount);
   @override
   List<Object?> get props => [];
 }
 
-class LandlineRechargeSelected extends LandlineRechargeState {
-  final String? response;
-  LandlineRechargeSelected(this.response);
-
-  @override
-  List<Object?> get props => [response];
+class LandlineRechargeSelected extends ServiceSuccessState {
+  LandlineRechargeSelected(super.response);
 }
 
-class LandlineRecharging extends LandlineRechargeState {
-  @override
-  List<Object?> get props => [];
-}
+class LandlineRecharging extends ServiceLoadingState {}
 
-class LandlineError extends LandlineRechargeState {
-  final String message;
-  LandlineError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class LandlineError extends ServiceErrorState {
+  LandlineError(super.message);
 }

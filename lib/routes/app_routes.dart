@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:ussd_npay/login_page.dart';
 import 'package:ussd_npay/view/cashout_page.dart';
-import 'package:ussd_npay/view/cashout_sucess.dart';
 import 'package:ussd_npay/view/change_pin_page.dart';
 import 'package:ussd_npay/view/home_page.dart';
-import 'package:ussd_npay/login_page.dart';
 import 'package:ussd_npay/view/internal_remit.dart';
 import 'package:ussd_npay/view/internet_payment_page.dart';
 import 'package:ussd_npay/view/isp_listing_page.dart';
-import 'package:ussd_npay/view/isps/payment_sucess.dart';
 import 'package:ussd_npay/view/landline_recharge_page.dart';
-import 'package:ussd_npay/view/landline_sucess_page.dart';
 import 'package:ussd_npay/view/recharge_screen.dart';
-import 'package:ussd_npay/view/remit_sucess.dart';
-import 'package:ussd_npay/view/request_sucess.dart';
+import 'package:ussd_npay/view/request_money_page.dart';
 import 'package:ussd_npay/view/send_money_page.dart';
-import 'package:ussd_npay/view/recharge_sucess_screen.dart';
 import 'package:ussd_npay/view/tv_payment_page.dart';
-import 'package:ussd_npay/view/tv_sucess_page.dart';
-import '../view/request_money_page.dart';
-import '../view/sucess_money_send.dart';
+
 import 'route_path.dart';
 
 class AppRoutes {
@@ -26,70 +19,36 @@ class AppRoutes {
     // route setting request cases
     switch (settings.name) {
       case RoutesName.home:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const HomePage());
-
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case RoutesName.login:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const LoginPage());
+        return MaterialPageRoute(builder: (context) => const LoginPage());
       case RoutesName.topup:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const RechargeScreen());
+        return MaterialPageRoute(builder: (context) => const RechargeScreen());
       case RoutesName.requestMoney:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const RequestMoneyScreen());
-      case RoutesName.rechargeComplete:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const SuccessScreen());
+            builder: (context) => const RequestMoneyScreen());
       case RoutesName.sendMoney:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const SendMoneyScreen());
-      case RoutesName.requestCompleted:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const RequestSucess());
-      case RoutesName.moneySent:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const SucessMoneySend());
+        return MaterialPageRoute(builder: (context) => const SendMoneyScreen());
       case RoutesName.landlineRecharge:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const LandlineRechargePage());
-      case RoutesName.landlineSucess:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const LandlineSucessPage());
-      case RoutesName.tvSuccess:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const TvSucessPage());
+            builder: (context) => const LandlineRechargePage());
       case RoutesName.tvPaymentPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const TvPaymentPage());
+        return MaterialPageRoute(builder: (context) => const TvPaymentPage());
       case RoutesName.internetPaymentPage:
         return MaterialPageRoute(
-          builder: (BuildContext context) {
+          builder: (context) {
             final args = settings.arguments as Map;
             return InternetPaymentPage(ispName: args['isp_name']);
           },
         );
       case RoutesName.ispListPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const IspListingPage());
-      case RoutesName.ispPaymentSucess:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const IspPaymentSucess());
+        return MaterialPageRoute(builder: (context) => const IspListingPage());
       case RoutesName.changePinPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const ChangePinPage());
+        return MaterialPageRoute(builder: (context) => const ChangePinPage());
       case RoutesName.cashoutPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const CashoutPage());
-      case RoutesName.cashoutSuccess:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const CashoutSucess());
-     case RoutesName.internalRemit:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const InternalRemit());
-             case RoutesName.remitSucess:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => const RemitSuccess());
+        return MaterialPageRoute(builder: (context) => const CashoutPage());
+      case RoutesName.internalRemit:
+        return MaterialPageRoute(builder: (context) => const InternalRemit());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

@@ -130,13 +130,13 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 16.sp),
-            BlocConsumer<HomeCubit, ServiceState>(
+            BlocConsumer<HomeCubit, HomeState>(
               listener: (context, homeState) {
-                if (homeState is ServiceLoading) {
+                if (homeState is HomeLoading) {
                   showLoadingDialog(context);
-                } else if (homeState is ServiceSelected) {
+                } else if (homeState is HomeSelected) {
                   Navigator.pop(context);
-                } else if (homeState is ServiceError) {
+                } else if (homeState is HomeError) {
                   Navigator.pop(context);
                 }
               },

@@ -8,8 +8,8 @@ import 'package:ussd_npay/utils/error_message.dart';
 import 'states/internal_remit_state.dart';
 import 'ussd_handler.dart';
 
-class InternalRemitCubit extends Cubit<InternalRemitState> {
-  InternalRemitCubit() : super(InternalRemitInitial());
+class InternalRemitCubit extends Cubit<RemitState> {
+  InternalRemitCubit() : super(RemitInitial());
 
   Future<void> processInternalRemit(String receiverNumber, int amount) async =>
       sendUssdIfVerified(

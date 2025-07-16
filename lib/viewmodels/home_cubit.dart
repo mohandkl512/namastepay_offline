@@ -6,18 +6,18 @@ import 'package:ussd_npay/services/ussd/ussd_methods.dart';
 import 'states/home_state.dart';
 import 'ussd_handler.dart';
 
-class HomeCubit extends Cubit<ServiceState> {
-  HomeCubit() : super(ServiceInitial());
+class HomeCubit extends Cubit<HomeState> {
+  HomeCubit() : super(HomeInitial());
 
   Future<void> checkBalance() async =>
     sendUssdIfVerified(
       onVerified: (verified) {
-        emit(ServiceLoading());
+        emit(HomeLoading());
         return UssdMethods.checkBalance(verified.pin);
       },
       onResponse: (_, response) {
-        emit(ServiceSelected(response));
+        emit(HomeSelected(response));
       },
-      onError: (error) => emit(ServiceError(error)),
+      onError: (error) => emit(HomeError(error)),
     );
 }

@@ -12,7 +12,7 @@ class IspListingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Internet"),
+          title: const Text('Internet'),
         ),
         body: ListView(
           padding: EdgeInsets.only(top: 2.h),
@@ -29,7 +29,7 @@ class IspListingPage extends StatelessWidget {
             ),
             ISP(
               imageUrl: NamastePayIcons.ntc,
-              name: "NT ADSL",
+              name: 'NT ADSL',
               onSelected: () {
                 Navigator.pushNamed(context, RoutesName.internetPaymentPage,
                     arguments: {
@@ -39,7 +39,7 @@ class IspListingPage extends StatelessWidget {
             ),
             ISP(
               imageUrl: NamastePayIcons.ntc,
-              name: "NT FTTH",
+              name: 'NT FTTH',
               onSelected: () {
                 Navigator.pushNamed(context, RoutesName.internetPaymentPage,
                     arguments: {

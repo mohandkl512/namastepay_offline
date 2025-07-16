@@ -1,31 +1,20 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class SendMoneyState extends Equatable {}
+typedef SendMoneyState = ServiceBaseState;
 
-class SendMoneyInitial extends SendMoneyState {
+class SendMoneyInitial extends ServiceBaseState {
   final int amount;
   SendMoneyInitial(this.amount);
   @override
   List<Object?> get props => [amount];
 }
 
-class SentMoney extends SendMoneyState {
-  final String? response;
-  SentMoney(this.response);
-
-  @override
-  List<Object?> get props => [ response];
+class SentMoney extends ServiceSuccessState {
+  SentMoney(super.response);
 }
 
-class SendingMoney extends SendMoneyState {
-  @override
-  List<Object?> get props => [];
-}
+class SendingMoney extends ServiceLoadingState {}
 
-class SendMoneyError extends SendMoneyState {
-  final String message;
-  SendMoneyError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class SendMoneyError extends ServiceErrorState {
+  SendMoneyError(super.message);
 }

@@ -1,31 +1,20 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class RequestState extends Equatable {}
+typedef RequestState = ServiceBaseState;
 
-class RequestInitial extends RequestState {
+class RequestInitial extends ServiceBaseState {
   final int amount;
   RequestInitial(this.amount);
   @override
   List<Object?> get props => [amount];
 }
 
-class Requested extends RequestState {
-  final String? response;
-  Requested(this.response);
-
-  @override
-  List<Object?> get props => [ response];
+class Requested extends ServiceSuccessState {
+  Requested(super.response);
 }
 
-class Requesting extends RequestState {
-  @override
-  List<Object?> get props => [];
-}
+class Requesting extends ServiceLoadingState {}
 
-class RequestError extends RequestState {
-  final String message;
-  RequestError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class RequestError extends ServiceErrorState {
+  RequestError(super.message);
 }

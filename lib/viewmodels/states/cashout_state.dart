@@ -1,32 +1,23 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class CashoutState extends Equatable {}
+typedef CashoutState = ServiceBaseState;
 
-class CashoutInitial extends CashoutState {
+class CashoutInitial extends ServiceBaseState {
   final int amount;
   CashoutInitial(this.amount);
   @override
   List<Object?> get props => [];
 }
 
-class CashoutDone extends CashoutState {
+class CashoutDone extends ServiceSuccessState {
   final int amount;
-  final String? response;
-  CashoutDone(this.amount, this.response);
-
+  CashoutDone(this.amount, super.response);
   @override
   List<Object?> get props => [amount, response];
 }
 
-class CashoutProcessing extends CashoutState {
-  @override
-  List<Object?> get props => [];
-}
+class CashoutProcessing extends ServiceLoadingState {}
 
-class CashoutError extends CashoutState {
-  final String message;
-  CashoutError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class CashoutError extends ServiceErrorState {
+  CashoutError(super.message);
 }

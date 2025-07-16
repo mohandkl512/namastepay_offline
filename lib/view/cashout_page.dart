@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils/app_colors.dart';
-import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
-import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/viewmodels/cashout_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/cashout_state.dart';
-import '../utils/error_dialog.dart';
+import 'package:ussd_npay/widgets/success_router.dart';
 import 'package:ussd_npay/widgets/form_page.dart';
 
 class CashoutPage extends StatefulWidget {
@@ -69,65 +66,44 @@ class _CashoutPageState extends State<CashoutPage> {
           },
         ),
         const SizedBox(height: 32),
-        BlocConsumer<CashoutCubit, CashoutState>(
-          listener: (context, state) {
-            dPrint("Current State: $state");
-            if (state is CashoutDone) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                RoutesName.cashoutSuccess,
-                (_) => false,
-              );
-            } else if (state is CashoutError) {
-              showErrorDialog(context, "Error Occured", state.message);
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                RoutesName.cashoutSuccess,
-                (_) => false,
-              );
-            } else if (state is CashoutProcessing) {
-              showLoadingDialog(context);
-            }
-          },
-          builder: (BuildContext context, CashoutState state) {
-            return Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_isFormValid) {
-                    if (int.parse(_amountController.text) >= 100) {
-                      _processCashout();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text("Enter amount more than 90"),
-                          backgroundColor: Colors.red[400],
-                          duration: const Duration(
-                            seconds: 3,
-                          ),
+        SuccessRouter<CashoutCubit, CashoutState>(
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                if (_isFormValid) {
+                  if (int.parse(_amountController.text) >= 100) {
+                    _processCashout();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text("Enter amount more than 90"),
+                        backgroundColor: Colors.red[400],
+                        duration: const Duration(
+                          seconds: 3,
                         ),
-                      );
-                    }
+                      ),
+                    );
                   }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: _isFormValid
-                      ? AppColors.buttonColor
-                      : AppColors.accentColor,
-                ),
-                child: Text(
-                  "Proceed to Cashout",
-                  style: _isFormValid
-                      ? Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          ?.copyWith(color: Colors.white)
-                      : Theme.of(context).textTheme.labelLarge,
-                ),
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                backgroundColor: _isFormValid
+                    ? AppColors.buttonColor
+                    : AppColors.accentColor,
               ),
-            );
-          },
+              child: Text(
+                "Proceed to Cashout",
+                style: _isFormValid
+                    ? Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: Colors.white)
+                    : Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+          ),
         ),
       ],
     );

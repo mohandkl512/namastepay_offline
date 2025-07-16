@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils/app_colors.dart';
-import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
-import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/viewmodels/internal_remit_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/internal_remit_state.dart';
+import 'package:ussd_npay/widgets/success_router.dart';
 import 'package:ussd_npay/widgets/form_page.dart';
-import '../utils/error_dialog.dart';
 
 class InternalRemit extends StatefulWidget {
   const InternalRemit({super.key});
@@ -75,66 +72,45 @@ class _InternalRemitState extends State<InternalRemit> {
           },
         ),
         const SizedBox(height: 32),
-        BlocConsumer<InternalRemitCubit, InternalRemitState>(
-          listener: (context, state) {
-            dPrint('Current State: $state');
-            if (state is RemitDone) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                RoutesName.remitSucess,
-                (_) => false,
-              );
-            } else if (state is RemitError) {
-              showErrorDialog(context, 'Error Occured', state.message);
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                RoutesName.remitSucess,
-                (_) => false,
-              );
-            } else if (state is RemitProcessing) {
-              showLoadingDialog(context);
-            }
-          },
-          builder: (BuildContext context, InternalRemitState state) {
-            return Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_isFormValid) {
-                    if (int.parse(_amountController.text) >= minAmount) {
-                      _processRemit();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                              'Enter amount more than Rs.$minAmount'),
-                          backgroundColor: Colors.red[400],
-                          duration: const Duration(
-                            seconds: 3,
-                          ),
+        SuccessRouter<InternalRemitCubit, RemitState>(
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                if (_isFormValid) {
+                  if (int.parse(_amountController.text) >= minAmount) {
+                    _processRemit();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            const Text('Enter amount more than Rs.$minAmount'),
+                        backgroundColor: Colors.red[400],
+                        duration: const Duration(
+                          seconds: 3,
                         ),
-                      );
-                    }
+                      ),
+                    );
                   }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: _isFormValid
-                      ? AppColors.buttonColor
-                      : AppColors.accentColor,
-                ),
-                child: Text(
-                  'Send Money',
-                  style: _isFormValid
-                      ? Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          ?.copyWith(color: Colors.white)
-                      : Theme.of(context).textTheme.labelLarge,
-                ),
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                backgroundColor: _isFormValid
+                    ? AppColors.buttonColor
+                    : AppColors.accentColor,
               ),
-            );
-          },
+              child: Text(
+                'Send Money',
+                style: _isFormValid
+                    ? Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: Colors.white)
+                    : Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+          ),
         ),
       ],
     );

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ussd_npay/utils/custom_toast.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
-import 'package:ussd_npay/utils/loading_dialog.dart';
 import 'package:ussd_npay/utils/tv_data.dart';
 import 'package:ussd_npay/viewmodels/states/tv_state.dart';
 import 'package:ussd_npay/viewmodels/tv_cubit.dart';
 import 'package:ussd_npay/widgets/form_page.dart';
+import 'package:ussd_npay/widgets/success_router.dart';
 import 'package:ussd_npay/widgets/tv_dropdown.dart';
-import '../routes/route_path.dart';
+
 import '../utils/app_colors.dart';
 
 class TvPaymentPage extends StatefulWidget {
@@ -87,21 +87,7 @@ class _TvPaymentPageState extends State<TvPaymentPage> {
             },
           ),
         ),
-        BlocListener<TvCubit, TvState>(
-          listener: (context, state) {
-            dPrint(state);
-            switch (state) {
-              case TvRequestSucessfull _:
-              case TvRequestError _:
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RoutesName.tvSuccess,
-                  (_) => false,
-                );
-              case TvRequestLoading _:
-                showLoadingDialog(context);
-            }
-          },
+        SuccessRouter<TvCubit, TvState>(
           child: Center(
             child: ElevatedButton(
               onPressed: () {
@@ -132,7 +118,7 @@ class _TvPaymentPageState extends State<TvPaymentPage> {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

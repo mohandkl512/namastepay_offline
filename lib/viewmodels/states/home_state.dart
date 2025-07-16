@@ -1,28 +1,28 @@
 import 'package:equatable/equatable.dart';
 
-abstract class ServiceState extends Equatable {}
+abstract class HomeState extends Equatable {}
 
-class ServiceInitial extends ServiceState {
+class HomeInitial extends HomeState {
   @override
   List<Object?> get props => [];
 }
 
-class ServiceSelected extends ServiceState {
+class HomeSelected extends HomeState {
   final String? serviceCode;
-  ServiceSelected(this.serviceCode);
+  HomeSelected(this.serviceCode);
 
   @override
   List<Object?> get props => [serviceCode];
 }
 
-class ServiceLoading extends ServiceState {
+class HomeLoading extends HomeState {
   @override
   List<Object?> get props => [];
 }
 
-class ServiceError extends ServiceState {
+class HomeError extends HomeState {
   final String message;
-  ServiceError(this.message);
+  HomeError(this.message);
 
   @override
   List<Object?> get props => [message];
