@@ -4,16 +4,15 @@ import 'package:ussd_npay/routes/route_path.dart';
 import 'package:ussd_npay/utils/isp_data.dart';
 import 'package:ussd_npay/utils/namaste_pay_icons.dart';
 import 'package:ussd_npay/widgets/isp.dart';
+import 'package:ussd_npay/widgets/service_page.dart';
 
 class IspListingPage extends StatelessWidget {
   const IspListingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Internet'),
-        ),
+    return ServicePage(
+        title: 'Internet',
         body: ListView(
           padding: EdgeInsets.only(top: 2.h),
           children: [

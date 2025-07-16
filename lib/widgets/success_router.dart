@@ -11,6 +11,7 @@ class SuccessRouter<B extends Cubit<S>, S extends ServiceBaseState> extends Stat
 
   final Widget child;
 
+  // TODO: use pushNamed instead?
   void _navigate(BuildContext context, ServiceBaseState state) {
     Navigator.pushAndRemoveUntil(
       context,

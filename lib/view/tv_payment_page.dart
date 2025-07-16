@@ -5,11 +5,8 @@ import 'package:ussd_npay/utils/debug_print.dart';
 import 'package:ussd_npay/utils/tv_data.dart';
 import 'package:ussd_npay/viewmodels/states/tv_state.dart';
 import 'package:ussd_npay/viewmodels/tv_cubit.dart';
-import 'package:ussd_npay/widgets/form_page.dart';
-import 'package:ussd_npay/widgets/success_router.dart';
+import 'package:ussd_npay/widgets/service_page.dart';
 import 'package:ussd_npay/widgets/tv_dropdown.dart';
-
-import '../utils/app_colors.dart';
 
 class TvPaymentPage extends StatefulWidget {
   const TvPaymentPage({super.key});
@@ -43,83 +40,66 @@ class _TvPaymentPageState extends State<TvPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FormPage(
+    return ServicePage(
       title: 'TV Recharge',
-      formKey: _formKey,
-      children: [
-        const SizedBox(height: 8),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text("Select a TV"),
-        ),
-        CustomDropDown(
-          onChanged: (value) {
-            dPrint("On TV Selected: $value");
-            setState(() {
-              selectedTv = value;
-            });
-          },
-          items: TvData.tvs,
-          selectedValue: selectedTv,
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text("Select Payment Option"),
-        ),
-        CustomDropDown(
-          onChanged: (value) {
-            setState(() {
-              selectedOption = value;
-            });
-          },
-          items: TvData.tvs[selectedTv] == TvData.dishTv
-              ? TvData.dishTVPaymentOptions
-              : TvData.simTvPaymentOption,
-          selectedValue: selectedOption,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: NumberFormField(
-            controller: _controller,
-            labelText: 'Customer ID',
-            onChanged: (value) {
-              _validateForm();
-            },
+      body: ServiceForm<TvCubit, TvState>(
+        formKey: _formKey,
+        children: [
+          const SizedBox(height: 8),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text('Select a TV'),
           ),
-        ),
-        SuccessRouter<TvCubit, TvState>(
-          child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                if (selectedOption != null &&
-                    selectedTv != null &&
-                    _isFormValid) {
-                  dPrint("Option and TV not Null");
-                  _processRequest();
-                } else {
-                  showCustomToast(context, "Select Options and Proceed");
-                }
+          CustomDropDown(
+            onChanged: (value) {
+              dPrint('On TV Selected: $value');
+              setState(() {
+                selectedTv = value;
+              });
+            },
+            items: TvData.tvs,
+            selectedValue: selectedTv,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text('Select Payment Option'),
+          ),
+          CustomDropDown(
+            onChanged: (value) {
+              setState(() {
+                selectedOption = value;
+              });
+            },
+            items: TvData.tvs[selectedTv] == TvData.dishTv
+                ? TvData.dishTVPaymentOptions
+                : TvData.simTvPaymentOption,
+            selectedValue: selectedOption,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: NumberFormField(
+              controller: _controller,
+              labelText: 'Customer ID',
+              onChanged: (value) {
+                _validateForm();
               },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                backgroundColor: _isFormValid
-                    ? AppColors.buttonColor
-                    : AppColors.accentColor,
-              ),
-              child: Text(
-                "Make Payment",
-                style: _isFormValid
-                    ? Theme.of(context)
-                        .textTheme
-                        .labelLarge
-                        ?.copyWith(color: Colors.white)
-                    : Theme.of(context).textTheme.labelLarge,
-              ),
             ),
           ),
-        ),
-      ],
+          ServiceFormSubmitButton(
+            formKey: _formKey,
+            onValid: () {
+              if (selectedOption != null &&
+                  selectedTv != null &&
+                  _isFormValid) {
+                dPrint('Option and TV not Null');
+                _processRequest();
+              } else {
+                showCustomToast(context, 'Select Options and Proceed');
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }

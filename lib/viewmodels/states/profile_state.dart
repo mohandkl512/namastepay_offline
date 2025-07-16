@@ -7,16 +7,16 @@ class ProfileInitial extends ServiceBaseState {
   List<Object?> get props => [];
 }
 
+class ProfileLoading extends ServiceLoadingState {}
+
 class ProfileLoaded extends ServiceBaseState {
+  ProfileLoaded(this.referalCode, this.changedPin);
   final String? referalCode;
   final String? changedPin;
-  ProfileLoaded(this.referalCode,this.changedPin);
 
   @override
   List<Object?> get props => [referalCode];
 }
-
-class ProfileLoading extends ServiceLoadingState {}
 
 class ProfileError extends ServiceErrorState {
   ProfileError(super.message);

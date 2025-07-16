@@ -1,36 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:ussd_npay/utils/app_colors.dart';
 import 'package:flutter/services.dart';
+import 'package:bloc/bloc.dart';
+import 'package:ussd_npay/viewmodels/states/service_state.dart';
 import 'package:ussd_npay/utils/field_validator.dart';
+import 'success_router.dart';
 
-class FormPage extends StatelessWidget {
-  const FormPage({
+class ServicePage extends StatelessWidget {
+  const ServicePage({super.key, this.title, this.body});
+
+  final String? title;
+  final Widget? body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: title == null
+          ? null
+          : AppBar(
+              title: Text(
+                title!,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+      body: body,
+    );
+  }
+}
+
+class ServiceForm<B extends Cubit<S>, S extends ServiceBaseState>
+    extends StatelessWidget {
+  const ServiceForm({
     super.key,
     this.formKey,
-    this.title = '',
     this.children = const <Widget>[],
   });
 
-  final String title;
   final Key? formKey;
   final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: formKey,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: formKey,
+        child: SuccessRouter<B, S>(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: children,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ServiceFormSubmitButton extends StatelessWidget {
+  const ServiceFormSubmitButton({
+    super.key,
+    required this.formKey,
+    this.text = 'Proceed',
+    this.onValid = _dummy,
+    this.onInvalid = _dummy,
+  });
+
+  static void _dummy() {}
+
+  final GlobalKey<FormState> formKey;
+  final String text;
+  final VoidCallback onValid;
+  final VoidCallback onInvalid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          if (formKey.currentState!.validate()) {
+            onValid();
+          } else {
+            onInvalid();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: AppColors.buttonColor,
+        ),
+        child: Text(
+          text,
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.white),
         ),
       ),
     );

@@ -8,8 +8,7 @@ import 'package:ussd_npay/utils/isp_data.dart';
 import 'package:ussd_npay/utils/namaste_pay_icons.dart';
 import 'package:ussd_npay/viewmodels/payments_cubit.dart';
 import 'package:ussd_npay/viewmodels/states/payment_state.dart';
-import 'package:ussd_npay/widgets/success_router.dart';
-import 'package:ussd_npay/widgets/form_page.dart';
+import 'package:ussd_npay/widgets/service_page.dart';
 
 class NtadslPayment extends StatefulWidget {
   final String title;
@@ -19,19 +18,34 @@ class NtadslPayment extends StatefulWidget {
   State<NtadslPayment> createState() => _NtadslPaymentState();
 }
 
-// TODO: do proper validation
-
 class _NtadslPaymentState extends State<NtadslPayment> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool validated = false;
 
   @override
   void dispose() {
     _phoneController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  void _doPayment() {
+    if (kReleaseMode) {
+      final paymentsCubit = context.read<PaymentsCubit>();
+      paymentsCubit.makePayment(
+          _phoneController.text, IspData.ntadsl, _amountController.text);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Only Available on Live'),
+          backgroundColor: Colors.red[400],
+          duration: const Duration(
+            seconds: 3,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -64,85 +78,29 @@ class _NtadslPaymentState extends State<NtadslPayment> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                NumberFormField.landline(
-                  controller: _phoneController,
-                  validator: (String? message) =>
-                      Utils.isValidLandline(_phoneController.text)
-                          ? null
-                          : 'Invalid Input',
-                  labelText: 'Landline Number',
-                ),
-                const SizedBox(height: 8),
-                NumberFormField.amount(
-                  controller: _amountController,
-                  labelText: 'Amount',
-                ),
-                const SizedBox(height: 32),
-                SuccessRouter<PaymentsCubit, PaymentState>(
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (kReleaseMode) {
-                          if (validated) {
-                            final paymentsCubit = context.read<PaymentsCubit>();
-                            paymentsCubit.makePayment(_phoneController.text,
-                                IspData.ntadsl, _amountController.text);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Validation Error'),
-                                backgroundColor: Colors.red[400],
-                                duration: const Duration(
-                                  seconds: 3,
-                                ),
-                              ),
-                            );
-                          }
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Only Available on Live'),
-                              backgroundColor: Colors.red[400],
-                              duration: const Duration(
-                                seconds: 3,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        backgroundColor: validated
-                            ? AppColors.buttonColor
-                            : AppColors.lightGreyColor,
-                      ),
-                      child: Text(
-                        'Pay',
-                        style: validated
-                            ? Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: Colors.white)
-                            : Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: Colors.black.withAlpha(80)),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+        ServiceForm<PaymentsCubit, PaymentState>(
+          formKey: _formKey,
+          children: [
+            const SizedBox(height: 8),
+            NumberFormField.landline(
+              controller: _phoneController,
+              labelText: 'Landline Number',
+              validator: (String? message) =>
+                  Utils.isValidLandline(_phoneController.text)
+                      ? null
+                      : 'Invalid Input',
             ),
-          ),
+            const SizedBox(height: 8),
+            NumberFormField.amount(
+              controller: _amountController,
+              labelText: 'Amount',
+            ),
+            const SizedBox(height: 32),
+            ServiceFormSubmitButton(
+              formKey: _formKey,
+              onValid: _doPayment,
+            ),
+          ],
         ),
       ],
     );
