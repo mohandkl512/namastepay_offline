@@ -32,7 +32,7 @@ class _StatementsPageState extends State<StatementsPage> {
     showLoadingDialog(context);
     try {
       if (authProvider.authState is Verified) {
-        String requestMoneycode = UssdMethods().statements(verified.pin);
+        String requestMoneycode = UssdMethods.statements(verified.pin);
         String? response = await UssdAdvanced.sendAdvancedUssd(
           code: requestMoneycode,
           subscriptionId: verified.subscriptionId,

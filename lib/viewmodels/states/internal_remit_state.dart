@@ -1,31 +1,22 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class InternalRemitState extends Equatable {}
+typedef RemitState = ServiceBaseState;
 
-class InternalRemitInitial extends InternalRemitState {
-  InternalRemitInitial();
+class RemitInitial extends ServiceBaseState {
+  RemitInitial();
   @override
   List<Object?> get props => [];
 }
 
-class RemitDone extends InternalRemitState {
+class RemitDone extends ServiceSuccessState {
   final int amount;
-  final String? response;
-  RemitDone(this.amount, this.response);
-
+  RemitDone(this.amount, super.response);
   @override
   List<Object?> get props => [amount, response];
 }
 
-class RemitProcessing extends InternalRemitState {
-  @override
-  List<Object?> get props => [];
-}
+class RemitProcessing extends ServiceLoadingState {}
 
-class RemitError extends InternalRemitState {
-  final String message;
-  RemitError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class RemitError extends ServiceErrorState {
+  RemitError(super.message);
 }

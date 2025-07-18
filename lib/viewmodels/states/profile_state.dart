@@ -1,30 +1,23 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class ProfileState extends Equatable {}
+typedef ProfileState = ServiceBaseState;
 
-class ProfileInitial extends ProfileState {
+class ProfileInitial extends ServiceBaseState {
   @override
   List<Object?> get props => [];
 }
 
-class ProfileLoaded extends ProfileState {
+class ProfileLoading extends ServiceLoadingState {}
+
+class ProfileLoaded extends ServiceBaseState {
+  ProfileLoaded(this.referalCode, this.changedPin);
   final String? referalCode;
   final String? changedPin;
-  ProfileLoaded(this.referalCode,this.changedPin);
-  
+
   @override
   List<Object?> get props => [referalCode];
 }
 
-class ProfileLoading extends ProfileState {
-  @override
-  List<Object?> get props => [];
-}
-
-class ProfileError extends ProfileState {
-  final String message;
-  ProfileError(this.message);
-  
-  @override
-  List<Object?> get props => [message];
+class ProfileError extends ServiceErrorState {
+  ProfileError(super.message);
 }

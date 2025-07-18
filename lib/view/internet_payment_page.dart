@@ -13,7 +13,7 @@ class InternetPaymentPage extends StatelessWidget {
     int ispId = int.parse(ispName);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Internet Payment"),
+        title: const Text('Internet Payment'),
       ),
       body: _buildIspPage(ispId),
     );
@@ -22,20 +22,20 @@ class InternetPaymentPage extends StatelessWidget {
   String getName(int id) {
     switch (id) {
       case IspData.ntadslLive:
-        return "NT ADSL";
+        return 'NT ADSL';
       case IspData.ntffthLive:
-        return "NT FTTH";
+        return 'NT FTTH';
       default:
-        return "Not Available";
+        return 'Not Available';
     }
   }
 
   _buildIspPage(int id) {
     switch (id) {
       case IspData.ntadslLive:
-        return const NtadslPayment(title: "NT ADSL");
+        return const NtadslPayment(title: 'NT ADSL');
       case IspData.ntffthLive:
-        return const NtftthPayment(title: "NT FTTH");
+        return const NtftthPayment(title: 'NT FTTH');
       default:
         return const SizedBox();
     }

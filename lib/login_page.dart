@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(8)),
                                     ),
-                                    validator: Validator.validatePin,
+                                    validator: Validator.pinValidator,
                                     maxLength: 4,
                                   ),
                                   Positioned(

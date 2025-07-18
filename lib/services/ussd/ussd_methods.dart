@@ -2,32 +2,34 @@ import 'package:ussd_npay/utils/base_ussd_codes.dart';
 import 'package:ussd_npay/utils/debug_print.dart';
 
 class UssdMethods {
+  UssdMethods._();
+
   /* This method directly checks account balance with provided pin. with option 2*/
-  String verificationCode(String pin) {
+  static String verificationCode(String pin) {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*2#";
   }
 
-  String checkBalance(String pin) {
+  static String checkBalance(String pin) {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*2#";
   }
 
-  String getReferral(String pin) {
-    /* 
+  static String getReferral(String pin) {
+    /*
     1-> For Account and
     2 -> 7 for referall code from account
      */
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*7#";
   }
 
-  String changePin(String pin, String newPin) {
-    /* 
+  static String changePin(String pin, String newPin) {
+    /*
     1-> For Account and
     2 -> 6 for change pin
      */
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*6*$newPin*$newPin#";
   }
 
-  String rechargeNTC(
+  static String rechargeNTC(
     String phoneNumberToRecharge,
     String pin,
     String amount,
@@ -35,7 +37,7 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*3*1*$phoneNumberToRecharge*$amount*$pin#";
   }
 
-  String rechargeNcell(
+  static String rechargeNcell(
     String phoneNumberToRecharge,
     String pin,
     String amount,
@@ -43,7 +45,7 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*3*2*$phoneNumberToRecharge*$amount*$pin#";
   }
 
-  String requestMoney(
+  static String requestMoney(
     String toContact,
     String pin,
     String amount,
@@ -51,7 +53,7 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*4*2*$toContact*$amount*$pin#";
   }
 
-  String sendMoney(
+  static String sendMoney(
     String toContact,
     String pin,
     String amount,
@@ -61,12 +63,12 @@ class UssdMethods {
       2. To Bank (Bank Withdraw)
       3. Cashour via Agents
       4. Transfer to unregistered user
-      This method only implements  feature P2P transfer 1. 
+      This method only implements  feature P2P transfer 1.
      */
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*5*1*$toContact*$amount*$pin#";
   }
 
-  String landlineRecharge(
+  static String landlineRecharge(
     String toContact,
     String pin,
     String amount,
@@ -74,38 +76,38 @@ class UssdMethods {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*5*$toContact*$amount*$pin#";
   }
 
-  String internetPayment(
+  static String internetPayment(
     String username,
     String pin,
     String internetOption,
   ) {
-    // final user=encodeUsernameCustom(username);
+    // final user=_encodeUsernameCustom(username);
 
     dPrint(
         "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*$username*1*$pin#");
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*$username*1*$pin#";
   }
 
-  String statements(
+  static String statements(
     String pin,
   ) {
-    // final user=encodeUsernameCustom(username);
+    // final user=_encodeUsernameCustom(username);
     dPrint("*${BaseUssdCodes.baseUSSDCode}*$pin*1*3#");
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*1*3#";
   }
 
-  String cashout(String pin, String agentNumber, int amount) {
-    // final user=encodeUsernameCustom(username);
+  static String cashout(String pin, String agentNumber, int amount) {
+    // final user=_encodeUsernameCustom(username);
     dPrint(
         "*${BaseUssdCodes.baseUSSDCode}*$pin*5*3*$agentNumber*$amount*$pin#");
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*5*3*$agentNumber*$amount*$pin#";
   }
 
-  String internalRemit(String pin, String receiverNumber, int amount) {
+  static String internalRemit(String pin, String receiverNumber, int amount) {
     return "*${BaseUssdCodes.baseUSSDCode}*$pin*5*4*$receiverNumber*$amount*$pin#";
   }
 
-  String ntInternetPayment(
+  static String ntInternetPayment(
     String landlineNumber,
     String pin,
     int ussdOption,
@@ -121,7 +123,7 @@ class UssdMethods {
   //   return "*${BaseUssdCodes.baseUSSDCode}*$pin*6*1*$internetOption*${username.trim()}*1*$pin#";
   // }
 
-  String tvPayment({
+  static String tvPayment({
     required String customerId,
     required String pin,
     required String tvOption,
@@ -133,7 +135,7 @@ class UssdMethods {
   }
 }
 
-String encodeUsernameCustom(String username) {
+String _encodeUsernameCustom(String username) {
   String alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   return username.toUpperCase().split('').map((char) {
     if (char == '_') {

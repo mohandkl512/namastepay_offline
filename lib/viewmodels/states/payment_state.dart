@@ -1,32 +1,23 @@
-import 'package:equatable/equatable.dart';
+import 'service_state.dart';
 
-abstract class PaymentState extends Equatable {}
+typedef PaymentState = ServiceBaseState;
 
-class PaymentInitial extends PaymentState {
-  int amount;
+class PaymentInitial extends ServiceBaseState {
+  final int amount;
   PaymentInitial(this.amount);
   @override
   List<Object?> get props => [];
 }
 
-class PaymentDone extends PaymentState {
+class PaymentDone extends ServiceSuccessState {
   final int  ispTypeId;
-  final String? response;
-  PaymentDone(this.ispTypeId, this.response);
-
+  PaymentDone(this.ispTypeId, super.response);
   @override
   List<Object?> get props => [ispTypeId, response];
 }
 
-class PaymentProcessing extends PaymentState {
-  @override
-  List<Object?> get props => [];
-}
+class PaymentProcessing extends ServiceLoadingState {}
 
-class PaymentError extends PaymentState {
-  final String message;
-  PaymentError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+class PaymentError extends ServiceErrorState {
+  PaymentError(super.message);
 }
